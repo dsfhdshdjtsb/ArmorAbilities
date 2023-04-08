@@ -1,4 +1,9 @@
 {
   "enchantment.aabilities.blink": "Blink",
-  "enchantment.aabilities.dash": "Dash"
+  "enchantment.aabilities.dash": "Dash",
+  "enchantment.aabilities.frost_stomp": "Frost Stomp",
+  "enchantment.aabilities.fire_stomp": "Fire Stomp",
+  "enchantment.aabilities.rush": "Rush",
+  "enchantment.aabilities.dodge": "Dodge",
+  "effect.aabilities.dodge": "Dodge"
 }

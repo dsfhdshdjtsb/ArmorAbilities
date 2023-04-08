@@ -11,24 +11,24 @@ import net.minecraft.util.Identifier;
 
 public class RushEnchantment  extends Enchantment {
     public RushEnchantment() {
-        super(Rarity.VERY_RARE, EnchantmentTarget.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super(Rarity.COMMON, EnchantmentTarget.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
         if(ModConfigs.RUSH)
             Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "rush"), this);
     }
 
     @Override
     public int getMinPower(int level) {
-        return 20;
+        return 1 + (level - 1) * 10;
     }
 
     @Override
     public int getMaxPower(int level) {
-        return 50;
+        return this.getMinPower(level) + 15;
     }
 
     @Override
     public int getMaxLevel() {
-        return 1;
+        return 5;
     }
 
     @Override

@@ -1,5 +1,23 @@
 package com.dsfhdshdjtsb.ArmorAbilities.util;
 
 public interface TimerAccess {
-    void aabilites_setTimer(long ticksUntilFireStomp);
+    void aabilities_setFireStompTimer(long ticksUntilFireStomp);
+
+    void aabilities_setFireStompAnimTimer(long ticksUntilFireStomp);
+
+    void aabilities_setFrostStompTimer(long ticksUntilFrostStomp);
+
+    void aabilities_setFrostStompAnimTimer(long ticksUntilFrostStomp);
+
+    void aabilities_setTranscendTimer(long ticks);
+
+    void aabilities_setHelmetCooldown(long ticks);
+    void aabilities_setChestCooldown(long ticks);
+    void aabilities_setLeggingCooldown(long ticks);
+    void aabilities_setBootCooldown(long ticks);
+
+    long aabilities_getHelmetCooldown();
+    long aabilities_getChestCooldown();
+    long aabilities_getLeggingCooldown();
+    long aabilities_getBootCooldown();
 }

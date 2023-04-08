@@ -1,19 +1,21 @@
 package com.dsfhdshdjtsb.ArmorAbilities.Enchantments;
 
 import com.dsfhdshdjtsb.ArmorAbilities.config.ModConfigs;
+import com.dsfhdshdjtsb.ArmorAbilities.mixin.AabilitiesLivingEntityMixin;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public class DashEnchantment  extends Enchantment {
-    public DashEnchantment() {
-        super(Rarity.COMMON, EnchantmentTarget.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
-        if(ModConfigs.DASH)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "dash"), this);
+public class CleanseEnchantment extends Enchantment {
+    public CleanseEnchantment() {
+        super(Rarity.COMMON, EnchantmentTarget.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        if(ModConfigs.CLEANSE)
+            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "cleanse"), this);
     }
 
     @Override
@@ -29,6 +31,13 @@ public class DashEnchantment  extends Enchantment {
     @Override
     public int getMaxLevel() {
         return 5;
+    }
+
+    @Override
+    public void onTargetDamaged(LivingEntity user, Entity target, int level) {
+        super.onTargetDamaged(user, target, level);
+
+
     }
 
     @Override

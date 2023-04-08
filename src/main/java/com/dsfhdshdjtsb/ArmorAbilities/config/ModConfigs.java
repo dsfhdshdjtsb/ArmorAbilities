@@ -6,6 +6,12 @@ public class ModConfigs {
     public static SimpleConfig CONFIG;
     private static ModConfigProvider configs;
 
+    public static boolean FOCUS;
+    public static boolean MEDITATE;
+
+    public static boolean CLEANSE;
+    public static boolean EXPLODE;
+
     public static boolean DASH;
     public static boolean RUSH;
     public static boolean DODGE;
@@ -24,6 +30,10 @@ public class ModConfigs {
     }
 
     private static void createConfigs() {
+        //configs.addKeyValuePair(new Pair<>("transcend.enabled", true));
+        configs.addKeyValuePair(new Pair<>("cleanse.enabled", true));
+        configs.addKeyValuePair(new Pair<>("explode.enabled", true));
+
         configs.addKeyValuePair(new Pair<>("dash.enabled", true));
         configs.addKeyValuePair(new Pair<>("rush.enabled", true));
         configs.addKeyValuePair(new Pair<>("dodge.enabled", true));
@@ -35,6 +45,10 @@ public class ModConfigs {
     }
 
     private static void assignConfigs() {
+        //TRANSCEND = CONFIG.getOrDefault("transcend.enabled", true);
+        CLEANSE = CONFIG.getOrDefault("cleanse.enabled", true);
+        EXPLODE = CONFIG.getOrDefault("explode.enabled", true);
+
         DASH = CONFIG.getOrDefault("dash.enabled", true);
         RUSH = CONFIG.getOrDefault("rush.enabled", true);
         DODGE = CONFIG.getOrDefault("dodge.enabled", true);
