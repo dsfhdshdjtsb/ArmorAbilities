@@ -199,20 +199,29 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
 
                 BlockPos blockPos = new BlockPos((int)x, (int)y, (int)z);
                 BlockState blockState = player.world.getBlockState(blockPos);
-                ((ServerWorld) player.world).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), x,
-                        y + 1, z, 4, 1, 0.0D, 1, 0.0D);
-
-            }
-            for(int j = 0; j < (5-ticksFireStompAnim); j++) {
-                if(Math.random() > 0.7) {
-                    double randX = player.getX() + (Math.random() - 0.5) * 2 * (7 - ticksFireStompAnim * 1.5);
-                    double randY = MathHelper.floor(player.getY() - 0.2);
-                    double randZ = player.getZ() + (Math.random() - 0.5) * 2 * (7 - ticksFireStompAnim * 1.5);
-
-                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.FLAME, randX,
-                            randY + 1, randZ, 1, 0.5, 0.0D, 0.5, 0.0D);
+                if(Math.random() < .10)
+                {
+                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.FLAME, x,
+                            y + 1, z, 4, 1, 0.0D, 1, 0.0D);
                 }
+                else
+                {
+                    ((ServerWorld) player.world).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), x,
+                            y + 1, z, 4, 1, 0.0D, 1, 0.0D);
+                }
+
+
             }
+//            for(int j = 0; j < (5-ticksFireStompAnim); j++) {
+//                if(Math.random() > 0.7) {
+//                    double randX = player.getX() + (Math.random() - 0.5) * 2 * (7 - ticksFireStompAnim * 1.5);
+//                    double randY = MathHelper.floor(player.getY() - 0.2);
+//                    double randZ = player.getZ() + (Math.random() - 0.5) * 2 * (7 - ticksFireStompAnim * 1.5);
+//
+//                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.FLAME, randX,
+//                            randY + 1, randZ, 1, 0.5, 0.0D, 0.5, 0.0D);
+//                }
+//            }
         }
 
         if(--this.ticksUntilFrostStomp >= 0L && (player).isOnGround())
@@ -257,20 +266,27 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
 
                 BlockPos blockPos = new BlockPos((int)x, (int)y, (int)z);
                 BlockState blockState = player.world.getBlockState(blockPos);
-                ((ServerWorld) player.world).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), x,
-                        y + 1, z, 4, 1, 0.0D, 1, 0.0D);
-
-            }
-            for(int j = 0; j < (5-ticksFrostStompAnim); j++) {
-                if(Math.random() > 0.7) {
-                    double randX = player.getX() + (Math.random() - 0.5) * 2 * (7 - ticksFrostStompAnim * 1.5);
-                    double randY = MathHelper.floor(player.getY() - 0.2);
-                    double randZ = player.getZ() + (Math.random() - 0.5) * 2 * (7 - ticksFrostStompAnim * 1.5);
-
-                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.SNOWFLAKE, randX,
-                            randY + 1, randZ, 1, 0.5, 0.0D, 0.5, 0.0D);
+                if(Math.random() < .10)
+                {
+                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.SNOWFLAKE, x,
+                            y + 1, z, 4, 1, 0.0D, 1, 0.0D);
+                }
+                else
+                {
+                    ((ServerWorld) player.world).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), x,
+                            y + 1, z, 4, 1, 0.0D, 1, 0.0D);
                 }
             }
+//            for(int j = 0; j < (5-ticksFrostStompAnim); j++) {
+//                if(Math.random() > 0.7) {
+//                    double randX = player.getX() + (Math.random() - 0.5) * 2 * (7 - ticksFrostStompAnim * 1.5);
+//                    double randY = MathHelper.floor(player.getY() - 0.2);
+//                    double randZ = player.getZ() + (Math.random() - 0.5) * 2 * (7 - ticksFrostStompAnim * 1.5);
+//
+//                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.SNOWFLAKE, randX,
+//                            randY + 1, randZ, 1, 0.5, 0.0D, 0.5, 0.0D);
+//                }
+//            }
         }
     }
 

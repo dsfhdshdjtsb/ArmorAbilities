@@ -63,8 +63,8 @@ public class KeyInputHandler {
             while(KEY_HELMET_ABILITY.wasPressed()) {
                 if (client.player != null) {
                     TimerAccess timerAccess =  ((TimerAccess) client.player);
-                    System.out.println(timerAccess.aabilities_getHelmetCooldown());
-                    if(true) {
+                    if(timerAccess.aabilities_getHelmetCooldown() <= 0) {
+                        timerAccess.aabilities_setHelmetCooldown(100);
                         int pulverizeLevel = 0;
                         int telekinesisLevel = 0;
                         for (ItemStack i : client.player.getArmorItems()) {
@@ -92,8 +92,8 @@ public class KeyInputHandler {
             while(KEY_CHEST_ABILITY.wasPressed()){
                 if(client.player != null) {
                     TimerAccess timerAccess =  ((TimerAccess) client.player);
-                    System.out.println(timerAccess.aabilities_getChestCooldown());
                     if(timerAccess.aabilities_getChestCooldown() <= 0) {
+                        timerAccess.aabilities_setChestCooldown(100);
 //                    int transcendLevel = 0;
 //
 //                    for (ItemStack i : client.player.getArmorItems()) {
@@ -135,7 +135,6 @@ public class KeyInputHandler {
             while (KEY_LEGGING_ABILITY.wasPressed()) {
                 if(client.player != null){
                     TimerAccess timerAccess = ((TimerAccess) client.player);
-                    System.out.println(timerAccess.aabilities_getLeggingCooldown());
                     if(timerAccess.aabilities_getLeggingCooldown() <= 0) {
                         timerAccess.aabilities_setLeggingCooldown(100);
                         int dashLevel = 0;
@@ -186,7 +185,6 @@ public class KeyInputHandler {
                 System.out.println("Boot ability pressed");
                 if(client.player != null){
                     TimerAccess timerAccess = ((TimerAccess) client.player);
-                    System.out.println(timerAccess.aabilities_getBootCooldown());
                     if(timerAccess.aabilities_getBootCooldown() <= 0) {
                         timerAccess.aabilities_setBootCooldown(100);
                         int blinkLevel = 0;

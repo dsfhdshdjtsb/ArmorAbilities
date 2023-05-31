@@ -10,16 +10,24 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
+import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 
 public class ArmorAbilitiesClient implements ClientModInitializer {
 
     private static KeyBinding keyBinding;
+    private static final Identifier TNT_TEXTURE = new Identifier("minecraft", "textures/entity/tnt/tnt.png");
 
     @Override
     public void onInitializeClient() {
@@ -33,6 +41,7 @@ public class ArmorAbilitiesClient implements ClientModInitializer {
 //            cooldownHud.render(matrixStack, tickDelta);
 //        });
         HudRenderCallback.EVENT.register(new CooldownHudOverlay());
+
 
     }
 }
