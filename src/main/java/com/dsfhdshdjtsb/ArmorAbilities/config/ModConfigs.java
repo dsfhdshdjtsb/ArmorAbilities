@@ -7,7 +7,8 @@ public class ModConfigs {
     private static ModConfigProvider configs;
 
     public static boolean FOCUS;
-    public static boolean MEDITATE;
+    public static boolean PULVERIZE;
+    public static boolean TELEKINESIS;
 
     public static boolean CLEANSE;
     public static boolean EXPLODE;
@@ -31,6 +32,9 @@ public class ModConfigs {
 
     private static void createConfigs() {
         //configs.addKeyValuePair(new Pair<>("transcend.enabled", true));
+        configs.addKeyValuePair(new Pair<>("pulverize.enabled", true));
+        configs.addKeyValuePair(new Pair<>("telekinesis.enabled", true));
+
         configs.addKeyValuePair(new Pair<>("cleanse.enabled", true));
         configs.addKeyValuePair(new Pair<>("explode.enabled", true));
 
@@ -46,6 +50,9 @@ public class ModConfigs {
 
     private static void assignConfigs() {
         //TRANSCEND = CONFIG.getOrDefault("transcend.enabled", true);
+        PULVERIZE= CONFIG.getOrDefault("pulverize.enabled", true);
+        TELEKINESIS= CONFIG.getOrDefault("telekinesis.enabled", true);
+
         CLEANSE = CONFIG.getOrDefault("cleanse.enabled", true);
         EXPLODE = CONFIG.getOrDefault("explode.enabled", true);
 

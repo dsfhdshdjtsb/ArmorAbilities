@@ -46,6 +46,7 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
     private long ticksUntilFrostStomp;
     private long ticksFrostStompAnim = -1;
     private long ticksTranscend;
+    private long ticksPulverize;
 
     public long helmetCooldown = 0;
     public long chestCooldown = 0;
@@ -71,6 +72,68 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
         leggingCooldown--;
         bootCooldown--;
         PlayerEntity player = (PlayerEntity) ((Object)this);
+
+        if(--this.ticksPulverize >= 0L)
+        {
+            List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
+                    .expand(7, 7, 7));
+
+            double playerX = player.getX();
+            double playerY = player.getY();
+            double playerZ = player.getZ();
+            double playerYaw = player.getYaw();
+            double playerPitch = player.getPitch();
+
+
+            double maxPitchRads = Math.min(Math.PI / 2, (playerPitch + 45) * Math.PI / 180);
+            double minPitchRads = Math.max(Math.PI / -2, (playerPitch - 45) * Math.PI / 180);
+            double length = 7;
+
+            double maxY = Math.min(playerY, -Math.sin(maxPitchRads) * length + playerY);
+            double minY = Math.max(playerY, -Math.sin(minPitchRads) * length + playerY);
+            double mult = Math.cos(playerPitch) * length + 1;
+
+            double maxRads = ((playerYaw - 45));
+            if(maxRads > 180)
+            {
+                maxRads = -180 + maxRads % 180;
+            }
+            double minRads = ((playerYaw + 45));
+            if(minRads < -180)
+            {
+                minRads = 180 + minRads % 180;
+            }
+
+            double maxX = Math.max(playerX, Math.sin(maxRads) * mult + playerX);
+            double minX = Math.min(playerX, Math.sin(minRads) * mult + playerX);
+
+            double maxZ = Math.max(playerZ, Math.cos(maxRads) * mult + playerZ);
+            double minZ = Math.min(playerZ, Math.cos(minRads) * mult + playerZ);
+
+            System.out.println("pitch: " + playerPitch);
+            System.out.println("Max pitch: " + maxPitchRads);
+            System.out.println("Min pitch: " + minPitchRads);
+            System.out.println("mult: " + mult);
+            System.out.println("yaw: " + playerYaw);
+            System.out.println("max yaw: " + maxRads);
+            System.out.println("min yaw: " + minRads);
+            System.out.println("maxY: " + maxY);
+            System.out.println("minY: " + minY);
+            System.out.println("maxX: " + maxX);
+            System.out.println("minX: " + minX);
+            System.out.println("maxZ: " + maxZ);
+            System.out.println("minZ: " + minZ);
+            System.out.println(-Math.sin(maxRads) * mult + playerX);
+            System.out.println(-Math.sin(minRads) * mult + playerX);
+            System.out.println("sin: " + -Math.sin(maxRads));
+
+//            for(LivingEntity e: list )
+//            {
+//                double posX = e.getX();
+//            double posY = e.getY();
+//            double posZ = e.getZ();
+//            }
+        }
         if(--this.ticksTranscend >= 0L)
         {
             if(this.ticksTranscend < 185)
@@ -210,6 +273,12 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
             }
         }
     }
+
+    @Override
+    public void aabilities_setPulverizeTimer(long ticks) {
+        this.ticksPulverize = ticks;
+    }
+
     @Override
     public void aabilities_setFireStompTimer(long ticksUntilFireStomp) {
         this.ticksUntilFireStomp = ticksUntilFireStomp;

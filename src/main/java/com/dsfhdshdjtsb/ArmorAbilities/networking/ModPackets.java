@@ -14,6 +14,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -43,19 +44,87 @@ public class ModPackets {
     public static final Identifier VELOCITY_UPDATE_ID = new Identifier(ArmorAbilities.modid, "velocity_update");
 
     public static void registerC2SPackets(){
+        ServerPlayNetworking.registerGlobalReceiver(HELMET_ABILITY_ID, (MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
+                                                                       PacketByteBuf buf, PacketSender responseSender) -> {
+            String name = buf.readString();
+            TimerAccess timerAccess =  ((TimerAccess) player);
+
+            if(name.equals("pulverize"))
+            {
+                timerAccess.aabilities_setHelmetCooldown(100);
+                timerAccess.aabilities_setPulverizeTimer(2);
+            }
+            if(name.equals("telekinesis"))
+            {
+                timerAccess.aabilities_setHelmetCooldown(100);
+                List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
+                        .expand(7, 7, 7));
+                list.remove(player);
+
+                if(!(list.size() <= 1)) {
+                    for (int i = 0; i < list.size(); i++) {
+                        LivingEntity e = list.get(i);
+                        if(e instanceof MobEntity )
+                        {
+                            System.out.println(((MobEntity) e).getTarget());
+                            if( i + 1 < list.size())
+                            {
+                                ((MobEntity) e).setTarget(list.get(i + 1));
+                            }
+                            else
+                            {
+                                ((MobEntity) e).setTarget(list.get(0));
+                            }
+//                            e.addStatusEffect(new StatusEffectInstance(ArmorAbilities.MIND_CONTROLLED_EFFECT, 160, 0));
+
+                            double xdif = e.getX() - player.getX();
+                            double ydif = e.getBodyY(0.5D) - player.getBodyY(0.5D);
+                            double zdif = e.getZ() - player.getZ();
+
+                            int particleNumConstant = 20; //number of particles
+                            double x = 0;
+                            double y = 0;
+                            double z = 0;
+                            while(Math.abs(x) < Math.abs(xdif))
+                            {
+                                ((ServerWorld) player.world).spawnParticles(ParticleTypes.ELECTRIC_SPARK, player.getX() + x,
+                                        player.getBodyY(1D) + y, player.getZ() + z, 0, 1, 0.0D, 1, 0.0D);
+                                x = x + xdif/particleNumConstant;
+                                y = y + ydif/particleNumConstant;
+                                z = z + zdif/particleNumConstant;
+                            }
+                        }
+                    }
+
+                    player.world.playSound(
+                            null,
+                            player.getX(),
+                            player.getY(),
+                            player.getZ(),
+                            SoundEvents.ENTITY_ILLUSIONER_CAST_SPELL,
+                            SoundCategory.PLAYERS,
+                            1f,
+                            1f
+                    );
+
+                }
+            }
+        });
         ServerPlayNetworking.registerGlobalReceiver(CHEST_ABILITY_ID, (MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
                                                                          PacketByteBuf buf, PacketSender responseSender) -> {
             String name = buf.readString();
-
+            TimerAccess timerAccess =  ((TimerAccess) player);
             if(name.equals("transcend"))
             {
                 player.addVelocity(new Vec3d(0, 1.5, 0));
-
-                ((TimerAccess) player).aabilities_setTranscendTimer(200);
+                timerAccess.aabilities_setChestCooldown(100);
+                timerAccess.aabilities_setTranscendTimer(200);
             }
 
             if(name.equals("cleanse"))
             {
+                timerAccess.aabilities_setChestCooldown(100);
+
                 player.clearStatusEffects();
                 player.setFireTicks(0);
                 player.setFrozenTicks(0);
@@ -79,6 +148,8 @@ public class ModPackets {
 
             if(name.equals("explode"))
             {
+                timerAccess.aabilities_setChestCooldown(100);
+
                 player.world.createExplosion(player, player.getX(), player.getY(), player.getZ(), 2.0f, World.ExplosionSourceType.NONE);
             }
         });
@@ -86,8 +157,11 @@ public class ModPackets {
                 PacketByteBuf buf, PacketSender responseSender) -> {
 
             String name = buf.readString();
+            TimerAccess timerAccess =  ((TimerAccess) player);
 
             if(name.equals("dash")) {
+                timerAccess.aabilities_setLeggingCooldown(100);
+
                 System.out.println("dash");
                 double velY = buf.readDouble();
                 double velX = buf.readDouble();
@@ -110,6 +184,8 @@ public class ModPackets {
             }
             if(name.equals("rush"))
             {
+                timerAccess.aabilities_setLeggingCooldown(100);
+
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 100, 2));
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 100, 0));
 
@@ -118,7 +194,7 @@ public class ModPackets {
                         player.getX(),
                         player.getY(),
                         player.getZ(),
-                        SoundEvents.ENTITY_ILLUSIONER_CAST_SPELL,
+                        SoundEvents.ENTITY_ILLUSIONER_PREPARE_BLINDNESS,
                         SoundCategory.PLAYERS,
                         1.5f,
                         1f
@@ -126,6 +202,8 @@ public class ModPackets {
             }
             if(name.equals("dodge"))
             {
+                timerAccess.aabilities_setLeggingCooldown(100);
+
                 player.addStatusEffect(new StatusEffectInstance(ArmorAbilities.DODGE_EFFECT, 40, 0));
             }
         });
@@ -134,8 +212,11 @@ public class ModPackets {
                                                                       PacketByteBuf buf, PacketSender responseSender) -> {
 
             String name = buf.readString();
+            TimerAccess timerAccess =  ((TimerAccess) player);
 
             if(name.equals("blink")) {
+                timerAccess.aabilities_setBootCooldown(100);
+
                 System.out.println("blink");
                 double posY = buf.readDouble();
                 double posX = buf.readDouble();
@@ -165,13 +246,15 @@ public class ModPackets {
 
             if(name.equals("fire_stomp"))
             {
-                ((TimerAccess) player).aabilities_setFireStompTimer(100);
+                timerAccess.aabilities_setBootCooldown(100);
+                timerAccess.aabilities_setFireStompTimer(100);
 //                if(player.isOnGround())
 //                    player.addVelocity(new Vec3d(0, 0.5, 0));
             }
             if(name.equals("frost_stomp"))
             {
-                ((TimerAccess) player).aabilities_setFrostStompTimer(100);
+                timerAccess.aabilities_setBootCooldown(100);
+                timerAccess.aabilities_setFrostStompTimer(100);
 //                if(player.isOnGround())
 //                    player.addVelocity(new Vec3d(0, 0.5, 0));
             }

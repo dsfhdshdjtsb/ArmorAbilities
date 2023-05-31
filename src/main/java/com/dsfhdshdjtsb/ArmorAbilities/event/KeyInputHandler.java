@@ -62,7 +62,28 @@ public class KeyInputHandler {
         ClientTickEvents.END_CLIENT_TICK.register((client -> {
             while(KEY_HELMET_ABILITY.wasPressed()) {
                 if (client.player != null) {
-                    System.out.println("boot");
+                    TimerAccess timerAccess =  ((TimerAccess) client.player);
+                    System.out.println(timerAccess.aabilities_getHelmetCooldown());
+                    if(true) {
+                        int pulverizeLevel = 0;
+                        int telekinesisLevel = 0;
+                        for (ItemStack i : client.player.getArmorItems()) {
+                            pulverizeLevel += EnchantmentHelper.getLevel(ArmorAbilities.PULVERIZE, i);
+                            telekinesisLevel += EnchantmentHelper.getLevel(ArmorAbilities.TELEKINESIS, i);
+                        }
+                        if(pulverizeLevel > 0)
+                        {
+                            PacketByteBuf buf = PacketByteBufs.create();
+                            buf.writeString("pulverize");
+                            ClientPlayNetworking.send(ModPackets.HELMET_ABILITY_ID, buf);
+                        }
+                        if(telekinesisLevel > 0)
+                        {
+                            PacketByteBuf buf = PacketByteBufs.create();
+                            buf.writeString("telekinesis");
+                            ClientPlayNetworking.send(ModPackets.HELMET_ABILITY_ID, buf);
+                        }
+                    }
                 }
             }
         }));
@@ -94,8 +115,6 @@ public class KeyInputHandler {
                         }
 
                         if (cleanseLevel > 0) {
-                            timerAccess.aabilities_setChestCooldown(100);
-
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("cleanse");
                             ClientPlayNetworking.send(ModPackets.CHEST_ABILITY_ID, buf);
@@ -103,8 +122,6 @@ public class KeyInputHandler {
                         }
 
                         if (explodeLevel > 0) {
-                            timerAccess.aabilities_setChestCooldown(100);
-
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("explode");
                             ClientPlayNetworking.send(ModPackets.CHEST_ABILITY_ID, buf);
@@ -120,6 +137,7 @@ public class KeyInputHandler {
                     TimerAccess timerAccess = ((TimerAccess) client.player);
                     System.out.println(timerAccess.aabilities_getLeggingCooldown());
                     if(timerAccess.aabilities_getLeggingCooldown() <= 0) {
+                        timerAccess.aabilities_setLeggingCooldown(100);
                         int dashLevel = 0;
                         int dodgeLevel = 0;
                         int rushLevel = 0;
@@ -131,8 +149,6 @@ public class KeyInputHandler {
                         }
 
                         if (dashLevel > 0) {
-                            timerAccess.aabilities_setLeggingCooldown(100);
-
                             double pitch = client.player.getPitch() * Math.PI / 180;
                             double velY = -Math.sin(pitch);
                             double mult = Math.cos(pitch);
@@ -152,15 +168,11 @@ public class KeyInputHandler {
                             ClientPlayNetworking.send(ModPackets.LEGGING_ABILITY_ID, buf);
                         }
                         if (rushLevel > 0) {
-                            timerAccess.aabilities_setLeggingCooldown(100);
-
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("rush");
                             ClientPlayNetworking.send(ModPackets.LEGGING_ABILITY_ID, buf);
                         }
                         if (dodgeLevel > 0) {
-                            timerAccess.aabilities_setLeggingCooldown(100);
-
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("dodge");
                             ClientPlayNetworking.send(ModPackets.LEGGING_ABILITY_ID, buf);
@@ -176,6 +188,7 @@ public class KeyInputHandler {
                     TimerAccess timerAccess = ((TimerAccess) client.player);
                     System.out.println(timerAccess.aabilities_getBootCooldown());
                     if(timerAccess.aabilities_getBootCooldown() <= 0) {
+                        timerAccess.aabilities_setBootCooldown(100);
                         int blinkLevel = 0;
                         int fireStompLevel = 0;
                         int frostStompLevel = 0;
@@ -189,8 +202,6 @@ public class KeyInputHandler {
                         }
 
                         if (blinkLevel > 0) {
-                            timerAccess.aabilities_setBootCooldown(100);
-
                             double rads = client.player.getYaw() * Math.PI / 180;
                             double posX = -Math.sin(rads) * 4 + client.player.getX();
                             double posZ = Math.cos(rads) * 4 + client.player.getZ();
@@ -217,8 +228,6 @@ public class KeyInputHandler {
                             }
                         }
                         if (fireStompLevel > 0) {
-                            timerAccess.aabilities_setBootCooldown(100);
-
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("fire_stomp");
 //                        if(client.player.isOnGround())
@@ -227,8 +236,6 @@ public class KeyInputHandler {
 
                         }
                         if (frostStompLevel > 0) {
-                            timerAccess.aabilities_setBootCooldown(100);
-
                             System.out.println("frost_stimp");
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("frost_stomp");
