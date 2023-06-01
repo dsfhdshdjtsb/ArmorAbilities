@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class ArmorAbilities implements ModInitializer {
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
@@ -31,11 +32,13 @@ public class ArmorAbilities implements ModInitializer {
 	public static final String modid = "aabilities";
 
 //	public static Enchantment TRANSCEND;
+	public static Enchantment FOCUS;
 	public static Enchantment PULVERIZE;
 	public static Enchantment TELEKINESIS;
 
 	public static Enchantment CLEANSE;
 	public static Enchantment EXPLODE;
+	public static Enchantment SIPHON;
 
 	public static Enchantment BLINK;
 	public static Enchantment FROST_STOMP;
@@ -68,11 +71,13 @@ public class ArmorAbilities implements ModInitializer {
 		ModConfigs.registerConfigs();
 		//TRANSCEND = new TranscendEnchantment();
 
+		FOCUS = new FocusEnchantment();
 		PULVERIZE = new PulverizeEnchantment();
 		TELEKINESIS = new TelekinesisEnchantment();
 
 		CLEANSE = new CleanseEnchantment();
 		EXPLODE = new ExplodeEnchantment();
+		SIPHON = new SiphonEnchantment();
 
 		BLINK = new BlinkEnchantment();
 		FROST_STOMP = new FrostStompEnchantment();

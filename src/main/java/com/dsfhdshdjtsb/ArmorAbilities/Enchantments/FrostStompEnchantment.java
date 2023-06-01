@@ -33,6 +33,8 @@ public class FrostStompEnchantment  extends Enchantment {
 
     @Override
     protected boolean canAccept(Enchantment other) {
+        if(other instanceof FireStompEnchantment || other instanceof BlinkEnchantment)
+            return false;
         return super.canAccept(other);
     }
 }

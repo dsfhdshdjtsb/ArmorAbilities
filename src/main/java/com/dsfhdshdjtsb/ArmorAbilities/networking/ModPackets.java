@@ -49,14 +49,16 @@ public class ModPackets {
             String name = buf.readString();
             TimerAccess timerAccess =  ((TimerAccess) player);
 
+            if(name.equals("focus"))
+            {
+                System.out.println("focus");
+            }
             if(name.equals("pulverize"))
             {
-                timerAccess.aabilities_setHelmetCooldown(100);
                 timerAccess.aabilities_setPulverizeTimer(2);
             }
             if(name.equals("telekinesis"))
             {
-                timerAccess.aabilities_setHelmetCooldown(100);
                 List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
                         .expand(7, 7, 7));
                 list.remove(player);
@@ -117,13 +119,11 @@ public class ModPackets {
             if(name.equals("transcend"))
             {
                 player.addVelocity(new Vec3d(0, 1.5, 0));
-                timerAccess.aabilities_setChestCooldown(100);
                 timerAccess.aabilities_setTranscendTimer(200);
             }
 
             if(name.equals("cleanse"))
             {
-                timerAccess.aabilities_setChestCooldown(100);
 
                 player.clearStatusEffects();
                 player.setFireTicks(0);
@@ -148,9 +148,43 @@ public class ModPackets {
 
             if(name.equals("explode"))
             {
-                timerAccess.aabilities_setChestCooldown(100);
-
                 player.world.createExplosion(player, player.getX(), player.getY(), player.getZ(), 2.0f, World.ExplosionSourceType.NONE);
+            }
+
+            if(name.equals("siphon"))
+            {
+                int level = buf.readInt();
+                List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
+                        .expand(6, 1.0D, 6));
+                int counter = 0;
+
+                list.remove(player);
+                for (LivingEntity e : list) {
+
+                    counter++;
+                    e.damage(player.world.getDamageSources().magic(), 1.0f);
+
+                    if (player.world instanceof ServerWorld) {
+                        double xdif = e.getX() - player.getX();
+                        double ydif = e.getBodyY(0.5D) - player.getBodyY(0.5D);
+                        double zdif = e.getZ() - player.getZ();
+
+                        int particleNumConstant = 20; //number of particles
+                        double x = 0;
+                        double y = 0;
+                        double z = 0;
+                        while(Math.abs(x) < Math.abs(xdif))
+                        {
+                            ((ServerWorld) player.world).spawnParticles(ParticleTypes.COMPOSTER, player.getX() + x,
+                                    player.getBodyY(0.5D) + y, player.getZ() + z, 0, 1, 0.0D, 1, 0.0D);
+                            x = x + xdif/particleNumConstant;
+                            y = y + ydif/particleNumConstant;
+                            z = z + zdif/particleNumConstant;
+                        }
+
+                    }
+                }
+                    player.heal(counter + (level - 1));
             }
         });
         ServerPlayNetworking.registerGlobalReceiver(LEGGING_ABILITY_ID, (MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
@@ -160,7 +194,6 @@ public class ModPackets {
             TimerAccess timerAccess =  ((TimerAccess) player);
 
             if(name.equals("dash")) {
-                timerAccess.aabilities_setLeggingCooldown(100);
 
                 System.out.println("dash");
                 double velY = buf.readDouble();
@@ -184,10 +217,24 @@ public class ModPackets {
             }
             if(name.equals("rush"))
             {
-                timerAccess.aabilities_setLeggingCooldown(100);
+                int rushLevel = buf.readInt();
+                int speedLevel = 0;
+                int strengthLevel = 0;
 
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 100, 2));
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 100, 0));
+                switch (rushLevel) {
+                    case 2, 3 -> {
+                        speedLevel = 1;
+                    }
+                    case 4 -> {
+                        speedLevel = 2;
+                    }
+                    case 5 -> {
+                        speedLevel = 2;
+                        strengthLevel = 1;
+                    }
+                }
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 100, speedLevel));
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 100, strengthLevel));
 
                 player.world.playSound(
                         null,
@@ -202,7 +249,6 @@ public class ModPackets {
             }
             if(name.equals("dodge"))
             {
-                timerAccess.aabilities_setLeggingCooldown(100);
 
                 player.addStatusEffect(new StatusEffectInstance(ArmorAbilities.DODGE_EFFECT, 40, 0));
             }
@@ -215,7 +261,6 @@ public class ModPackets {
             TimerAccess timerAccess =  ((TimerAccess) player);
 
             if(name.equals("blink")) {
-                timerAccess.aabilities_setBootCooldown(100);
 
                 System.out.println("blink");
                 double posY = buf.readDouble();
@@ -246,14 +291,12 @@ public class ModPackets {
 
             if(name.equals("fire_stomp"))
             {
-                timerAccess.aabilities_setBootCooldown(100);
                 timerAccess.aabilities_setFireStompTimer(100);
 //                if(player.isOnGround())
 //                    player.addVelocity(new Vec3d(0, 0.5, 0));
             }
             if(name.equals("frost_stomp"))
             {
-                timerAccess.aabilities_setBootCooldown(100);
                 timerAccess.aabilities_setFrostStompTimer(100);
 //                if(player.isOnGround())
 //                    player.addVelocity(new Vec3d(0, 0.5, 0));

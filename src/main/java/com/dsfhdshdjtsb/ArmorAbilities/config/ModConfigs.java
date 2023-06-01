@@ -12,6 +12,7 @@ public class ModConfigs {
 
     public static boolean CLEANSE;
     public static boolean EXPLODE;
+    public static boolean SIPHON;
 
     public static boolean DASH;
     public static boolean RUSH;
@@ -32,11 +33,13 @@ public class ModConfigs {
 
     private static void createConfigs() {
         //configs.addKeyValuePair(new Pair<>("transcend.enabled", true));
+        configs.addKeyValuePair(new Pair<>("focus.enabled", true));
         configs.addKeyValuePair(new Pair<>("pulverize.enabled", true));
         configs.addKeyValuePair(new Pair<>("telekinesis.enabled", true));
 
         configs.addKeyValuePair(new Pair<>("cleanse.enabled", true));
         configs.addKeyValuePair(new Pair<>("explode.enabled", true));
+        configs.addKeyValuePair(new Pair<>("siphon.enabled", true));
 
         configs.addKeyValuePair(new Pair<>("dash.enabled", true));
         configs.addKeyValuePair(new Pair<>("rush.enabled", true));
@@ -50,11 +53,13 @@ public class ModConfigs {
 
     private static void assignConfigs() {
         //TRANSCEND = CONFIG.getOrDefault("transcend.enabled", true);
+        FOCUS= CONFIG.getOrDefault("focus.enabled", true);
         PULVERIZE= CONFIG.getOrDefault("pulverize.enabled", true);
         TELEKINESIS= CONFIG.getOrDefault("telekinesis.enabled", true);
 
         CLEANSE = CONFIG.getOrDefault("cleanse.enabled", true);
         EXPLODE = CONFIG.getOrDefault("explode.enabled", true);
+        SIPHON = CONFIG.getOrDefault("siphon.enabled", true);
 
         DASH = CONFIG.getOrDefault("dash.enabled", true);
         RUSH = CONFIG.getOrDefault("rush.enabled", true);

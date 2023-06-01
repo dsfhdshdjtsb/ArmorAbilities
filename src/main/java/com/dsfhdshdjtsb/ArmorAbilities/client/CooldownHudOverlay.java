@@ -5,6 +5,7 @@ import com.dsfhdshdjtsb.ArmorAbilities.util.TimerAccess;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -27,6 +28,7 @@ public class CooldownHudOverlay implements HudRenderCallback {
 
         if(client != null)
         {
+            TextRenderer textRenderer = client.textRenderer;
             TimerAccess timerAccess =  ((TimerAccess) client.player);
             int width = client.getWindow().getScaledWidth();
             int height = client.getWindow().getScaledHeight();
@@ -39,76 +41,69 @@ public class CooldownHudOverlay implements HudRenderCallback {
             if(timerAccess != null && client.world != null) {
                 float color;
 
-                if (timerAccess.aabilities_getHelmetCooldown() < 30) {
-                    color = (float) Math.abs(Math.sin(client.world.getTime()/2.0));
-                }
-                else if (timerAccess.aabilities_getHelmetCooldown() < 60 )
-                {
-                    color = (float) Math.abs(Math.sin(client.world.getTime()/10.0));
-                }
-                else
-                {
-                    color = 1.0f;
-                }
-                RenderSystem.setShaderColor(color, color, color, 1.0f);
-                RenderSystem.setShaderTexture(0, COOLDOWN_HELMET);
-                if(timerAccess.aabilities_getHelmetCooldown() > 0 )
+                double curCooldown = timerAccess.aabilities_getHelmetCooldown();
+                if(curCooldown > 0 ) {
+                    if (curCooldown < 40) {
+                        color = (float) Math.abs(Math.sin(client.world.getTime() / 2.0));
+                    } else if (curCooldown < 100) {
+                        color = (float) Math.abs(Math.sin(client.world.getTime() / 10.0));
+                    } else {
+                        color = 1.0f;
+                    }
+                    RenderSystem.setShaderColor(color, color, color, 1.0f);
+                    RenderSystem.setShaderTexture(0, COOLDOWN_HELMET);
+
                     DrawableHelper.drawTexture(matrixStack, x - 180, y - 25, 0, 0, 20, 20, 20, 20);
+//                    String cooldownText = Integer.toString((int) (curCooldown / 20));
 
+//                    textRenderer.draw(matrixStack, cooldownText, x - 180, y - 20, 0xFFFFFFFF);
+                }
 
-                if (timerAccess.aabilities_getChestCooldown() < 30) {
-                    color = (float) Math.abs(Math.sin(client.world.getTime()/2.0));
-                }
-                else if (timerAccess.aabilities_getChestCooldown() < 60 )
-                {
-                    color = (float) Math.abs(Math.sin(client.world.getTime()/10.0));
-                }
-                else
-                {
-                    color = 1.0f;
-                }
-                RenderSystem.setShaderColor(color, color, color, 1.0f);
-                RenderSystem.setShaderTexture(0, COOLDOWN_CHESTPLATE);
-                if(timerAccess.aabilities_getChestCooldown() > 0 )
+                curCooldown = timerAccess.aabilities_getChestCooldown();
+                if(curCooldown > 0) {
+                    if (curCooldown < 40) {
+                        color = (float) Math.abs(Math.sin(client.world.getTime() / 2.0));
+                    } else if (curCooldown < 100) {
+                        color = (float) Math.abs(Math.sin(client.world.getTime() / 10.0));
+                    } else {
+                        color = 1.0f;
+                    }
+                    RenderSystem.setShaderColor(color, color, color, 1.0f);
+                    RenderSystem.setShaderTexture(0, COOLDOWN_CHESTPLATE);
                     DrawableHelper.drawTexture(matrixStack, x - 165, y - 25, 0, 0, 20, 20, 20, 20);
+                }
 
-
-                if (timerAccess.aabilities_getLeggingCooldown() < 30) {
-                    color = (float) Math.abs(Math.sin(client.world.getTime()/2.0));
-                }
-                else if (timerAccess.aabilities_getLeggingCooldown() < 60 )
-                {
-                    color = (float) Math.abs(Math.sin(client.world.getTime()/10.0));
-                }
-                else
-                {
-                    color = 1.0f;
-                }
-                RenderSystem.setShaderColor(color, color, color, 1.0f);
-                RenderSystem.setShaderTexture(0, COOLDOWN_LEGGINGS);
-                if(timerAccess.aabilities_getLeggingCooldown() > 0 )
+                curCooldown = timerAccess.aabilities_getLeggingCooldown();
+                if(curCooldown > 0) {
+                    if (curCooldown < 40) {
+                        color = (float) Math.abs(Math.sin(client.world.getTime() / 2.0));
+                    } else if (curCooldown < 100) {
+                        color = (float) Math.abs(Math.sin(client.world.getTime() / 10.0));
+                    } else {
+                        color = 1.0f;
+                    }
+                    RenderSystem.setShaderColor(color, color, color, 1.0f);
+                    RenderSystem.setShaderTexture(0, COOLDOWN_LEGGINGS);
                     DrawableHelper.drawTexture(matrixStack, x - 150, y - 25, 0, 0, 20, 20, 20, 20);
+                }
 
-
-                if (timerAccess.aabilities_getBootCooldown() < 30) {
-                    color = (float) Math.abs(Math.sin(client.world.getTime()/2.0));
-                }
-                else if (timerAccess.aabilities_getBootCooldown() < 60 )
-                {
-                    color = (float) Math.abs(Math.sin(client.world.getTime()/10.0));
-                }
-                else
-                {
-                    color = 1.0f;
-                }
-                RenderSystem.setShaderColor(color, color, color, 1.0f);
-                RenderSystem.setShaderTexture(0, COOLDOWN_BOOTS);
-                if(timerAccess.aabilities_getBootCooldown() > 0 )
+                curCooldown = timerAccess.aabilities_getBootCooldown();
+                if(curCooldown > 0) {
+                    if (curCooldown < 40) {
+                        color = (float) Math.abs(Math.sin(client.world.getTime() / 2.0));
+                    } else if (curCooldown < 100) {
+                        color = (float) Math.abs(Math.sin(client.world.getTime() / 10.0));
+                    } else {
+                        color = 1.0f;
+                    }
+                    RenderSystem.setShaderColor(color, color, color, 1.0f);
+                    RenderSystem.setShaderTexture(0, COOLDOWN_BOOTS);
                     DrawableHelper.drawTexture(matrixStack, x - 135, y - 25, 0, 0, 20, 20, 20, 20);
 
-                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+                }
             }
 
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         }
 

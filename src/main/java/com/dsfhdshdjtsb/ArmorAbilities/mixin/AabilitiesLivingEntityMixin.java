@@ -11,6 +11,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BeaconBlockEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -18,6 +19,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
@@ -157,7 +159,11 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
         if(--this.ticksUntilFireStomp >= 0L && (player).isOnGround())
         {
             this.ticksUntilFireStomp = 0;
-            System.out.println("stomp");
+            int fireStompLevel = 0;
+            for (ItemStack i : player.getArmorItems()) {
+                fireStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.FIRE_STOMP, i);
+            }
+
             List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
                     .expand(7, 2, 7));
 
@@ -165,7 +171,7 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
             if(!list.isEmpty()) {
                 for (LivingEntity e : list) {
                     e.setFireTicks(60);
-                    e.damage(player.world.getDamageSources().magic(), 4);
+                    e.damage(player.world.getDamageSources().magic(), 4 + fireStompLevel);
                     World world = e.world;
                     BlockPos pos = e.getBlockPos();
                     if (world.getBlockState(pos) == Blocks.AIR.getDefaultState()) {
@@ -227,6 +233,11 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
         if(--this.ticksUntilFrostStomp >= 0L && (player).isOnGround())
         {
             this.ticksUntilFrostStomp = 0;
+            int frostStompLevel = 0;
+            for (ItemStack i : player.getArmorItems()) {
+                frostStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.FROST_STOMP, i);
+            }
+
             System.out.println("stomp");
             List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
                     .expand(7, 2, 7));
@@ -234,8 +245,11 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
             list.remove(player);
             if(!list.isEmpty()) {
                 for (LivingEntity e : list) {
-                    e.setFrozenTicks(155 + 300);
-                    e.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 100, 0));
+                    e.setFrozenTicks(140 + frostStompLevel * 80);
+                    int amp = 0;
+                    if(frostStompLevel >= 4)
+                        amp ++;
+                    e.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 100, amp));
                     ((ServerWorld) player.world).spawnParticles(ParticleTypes.SNOWFLAKE, e.getX(),
                             e.getBodyY(0.5D) - 1, e.getZ(), 10, 0.5, 0.0D, 0.5, 0.0D);
                 }
