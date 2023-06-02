@@ -11,6 +11,8 @@ public interface TimerAccess {
 
     void aabilities_setTranscendTimer(long ticks);
 
+    void aabiliites_setFuse(long ticks);
+
     void aabilities_setHelmetCooldown(long ticks);
     void aabilities_setChestCooldown(long ticks);
     void aabilities_setLeggingCooldown(long ticks);
@@ -20,4 +22,7 @@ public interface TimerAccess {
     long aabilities_getChestCooldown();
     long aabilities_getLeggingCooldown();
     long aabilities_getBootCooldown();
+
+    long aabilities_getFuse();
+
 }

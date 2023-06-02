@@ -145,7 +145,9 @@ public class KeyInputHandler {
                         }
 
                         if (explodeLevel > 0) {
+                            cooldown = 300 - explodeLevel * 20;
                             PacketByteBuf buf = PacketByteBufs.create();
+                            timerAccess.aabiliites_setFuse(80);
                             buf.writeString("explode");
                             ClientPlayNetworking.send(ModPackets.CHEST_ABILITY_ID, buf);
                         }
@@ -153,7 +155,7 @@ public class KeyInputHandler {
                             List<LivingEntity> list = client.player.world.getNonSpectatingEntities(LivingEntity.class, client.player.getBoundingBox()
                                     .expand(6, 1.0D, 6));
                             if(list.size() > 1) {
-                                cooldown = 300 - cleanseLevel * 20;
+                                cooldown = 300 - siphonLevel * 20;
                                 PacketByteBuf buf = PacketByteBufs.create();
                                 buf.writeString("siphon");
                                 buf.writeInt(siphonLevel);

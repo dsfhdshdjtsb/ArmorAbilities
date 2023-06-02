@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.render.entity.EntityRenderers;
+import net.minecraft.client.render.entity.TntEntityRenderer;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -124,7 +126,6 @@ public class ModPackets {
 
             if(name.equals("cleanse"))
             {
-
                 player.clearStatusEffects();
                 player.setFireTicks(0);
                 player.setFrozenTicks(0);
@@ -148,14 +149,16 @@ public class ModPackets {
 
             if(name.equals("explode"))
             {
-                player.world.createExplosion(player, player.getX(), player.getY(), player.getZ(), 2.0f, World.ExplosionSourceType.NONE);
+                timerAccess.aabiliites_setFuse(80);
+                player.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                //                player.world.createExplosion(player, player.getX(), player.getY(), player.getZ(), 2.0f, World.ExplosionSourceType.NONE);
             }
 
             if(name.equals("siphon"))
             {
                 int level = buf.readInt();
                 List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
-                        .expand(6, 1.0D, 6));
+                        .expand(7, 1.0D, 7));
                 int counter = 0;
 
                 list.remove(player);

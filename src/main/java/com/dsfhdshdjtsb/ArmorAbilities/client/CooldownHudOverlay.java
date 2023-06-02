@@ -16,7 +16,7 @@ public class CooldownHudOverlay implements HudRenderCallback {
     private static final Identifier COOLDOWN_HELMET =  new Identifier(ArmorAbilities.modid, "/textures/gui/helmet2.png");
     private static final Identifier COOLDOWN_CHESTPLATE =  new Identifier(ArmorAbilities.modid, "/textures/gui/chestplate.png");
     private static final Identifier COOLDOWN_LEGGINGS =  new Identifier(ArmorAbilities.modid, "/textures/gui/leggings.png");
-    private static final Identifier COOLDOWN_BOOTS =  new Identifier(ArmorAbilities.modid, "/textures/gui/boots.png");
+    private static final Identifier COOLDOWN_BOOTS =  new Identifier(ArmorAbilities.modid, "/textures/gui/boots2.png");
 
     @Override
     public void onHudRender(MatrixStack matrixStack, float tickDelta) {

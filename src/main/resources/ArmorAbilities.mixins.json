@@ -8,6 +8,7 @@
     "ExampleMixin"
   ],
   "client": [
+    "AabilitiesLivingEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -29,6 +29,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -55,6 +56,7 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
     public long leggingCooldown = 0;
     public long bootCooldown = 0;
 
+    private long fuse = 0;
 
     @Inject(at = @At("HEAD"), method = "damage", cancellable = true)
     private void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
@@ -69,11 +71,31 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
     @Inject(method = "tick", at = @At("TAIL"))
     private void onTick(CallbackInfo c1)
     {
+        PlayerEntity player = (PlayerEntity) ((Object)this);
         helmetCooldown--;
         chestCooldown--;
         leggingCooldown--;
         bootCooldown--;
-        PlayerEntity player = (PlayerEntity) ((Object)this);
+        fuse-=2;
+
+        if(fuse >= 0 )
+        {
+
+            if(fuse == 0)
+            {
+                float explodeLevel = 2.5f;
+                for (ItemStack i : player.getArmorItems()) {
+                    explodeLevel += 0.5 * EnchantmentHelper.getLevel(ArmorAbilities.EXPLODE, i);
+                }
+                if(!player.world.isClient())
+                    player.world.createExplosion(player, player.getX(), player.getBodyY(0.0625D), player.getZ(), explodeLevel, World.ExplosionSourceType.NONE);
+            }
+            if(player.isOnGround())
+            {
+                player.slowMovement(player.getBlockStateAtPos(), new Vec3d(0.001,0.001,0.001));
+            }
+        }
+
 
         if(--this.ticksPulverize >= 0L)
         {
@@ -171,7 +193,7 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
             if(!list.isEmpty()) {
                 for (LivingEntity e : list) {
                     e.setFireTicks(60);
-                    e.damage(player.world.getDamageSources().magic(), 4 + fireStompLevel);
+                    e.damage(player.world.getDamageSources().magic(), 2 + fireStompLevel);
                     World world = e.world;
                     BlockPos pos = e.getBlockPos();
                     if (world.getBlockState(pos) == Blocks.AIR.getDefaultState()) {
@@ -333,6 +355,11 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
     }
 
     @Override
+    public void aabiliites_setFuse(long ticks) {
+        this.fuse = ticks;
+    }
+
+    @Override
     public void aabilities_setHelmetCooldown(long ticks) {
         this.helmetCooldown = ticks;
     }
@@ -370,5 +397,10 @@ public  class AabilitiesLivingEntityMixin implements TimerAccess {
     @Override
     public long aabilities_getBootCooldown() {
         return this.bootCooldown;
+    }
+
+    @Override
+    public long aabilities_getFuse() {
+        return fuse;
     }
 }
