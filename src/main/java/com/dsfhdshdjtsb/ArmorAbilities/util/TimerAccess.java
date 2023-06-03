@@ -15,6 +15,8 @@ public interface TimerAccess {
 
     void aabilities_setAnvilStompTimer(long ticks);
     void aabilities_setAnvilStompAnimTimer(long ticks);
+    void aabilities_setShouldAnvilRender(boolean bool);
+    boolean aabilities_getShouldAnvilRender();
 
     void aabilities_setHelmetCooldown(long ticks);
     void aabilities_setChestCooldown(long ticks);

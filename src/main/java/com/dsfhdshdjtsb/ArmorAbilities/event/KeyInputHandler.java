@@ -12,6 +12,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
@@ -63,17 +64,17 @@ public class KeyInputHandler {
                         timerAccess.aabilities_setHelmetCooldown(200);
                         int cooldown = 0;
                         int pulverizeLevel = 0;
-                        int telekinesisLevel = 0;
+                        int mindControlLevel = 0;
                         int focusLevel = 0;
 
                         for (ItemStack i : client.player.getArmorItems()) {
                             pulverizeLevel += EnchantmentHelper.getLevel(ArmorAbilities.PULVERIZE, i);
-                            telekinesisLevel += EnchantmentHelper.getLevel(ArmorAbilities.MIND_CONTROL, i);
+                            mindControlLevel += EnchantmentHelper.getLevel(ArmorAbilities.MIND_CONTROL, i);
                             focusLevel += EnchantmentHelper.getLevel(ArmorAbilities.FOCUS, i);
                         }
                         if(focusLevel > 0)
                         {
-                            cooldown = 400 - focusLevel * 20;
+                            cooldown = 800 - focusLevel * 40;
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("focus");
                             ClientPlayNetworking.send(ModPackets.HELMET_ABILITY_ID, buf);
@@ -88,11 +89,17 @@ public class KeyInputHandler {
                             buf.writeString("pulverize");
                             ClientPlayNetworking.send(ModPackets.HELMET_ABILITY_ID, buf);
                         }
-                        if(telekinesisLevel > 0)
+                        if(mindControlLevel > 0)
                         {
-                            PacketByteBuf buf = PacketByteBufs.create();
-                            buf.writeString("telekinesis");
-                            ClientPlayNetworking.send(ModPackets.HELMET_ABILITY_ID, buf);
+                            List<MobEntity> list = client.player.world.getNonSpectatingEntities(MobEntity.class, client.player.getBoundingBox()
+                                    .expand(6, 1.0D, 6));
+                            if(list.size() > 0) {
+                                cooldown = 600 - mindControlLevel * 40;
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                buf.writeString("mind_control");
+                                buf.writeInt(mindControlLevel);
+                                ClientPlayNetworking.send(ModPackets.HELMET_ABILITY_ID, buf);
+                            }
                         }
                         timerAccess.aabilities_setHelmetCooldown(cooldown);
                     }
@@ -215,8 +222,8 @@ public class KeyInputHandler {
                         if (blinkLevel > 0) {
 
                             double rads = client.player.getYaw() * Math.PI / 180;
-                            double posX = -Math.sin(rads) * 4 + client.player.getX();
-                            double posZ = Math.cos(rads) * 4 + client.player.getZ();
+                            double posX = -Math.sin(rads) * (2+blinkLevel) + client.player.getX();
+                            double posZ = Math.cos(rads) * (2+blinkLevel) + client.player.getZ();
                             double posY = client.player.getY();
 
                             double velX = -Math.sin(rads) * 0.2;

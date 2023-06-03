@@ -1,7 +1,11 @@
 package com.dsfhdshdjtsb.ArmorAbilities.mixin;
 
 import com.dsfhdshdjtsb.ArmorAbilities.ArmorAbilities;
+import com.dsfhdshdjtsb.ArmorAbilities.networking.ModPackets;
 import com.dsfhdshdjtsb.ArmorAbilities.util.TimerAccess;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -12,8 +16,10 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -46,6 +52,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
     public long chestCooldown = 0;
     public long leggingCooldown = 0;
     public long bootCooldown = 0;
+    public boolean shouldRenderAnvil = false;
 
     private long fuse = 0;
 
@@ -102,7 +109,6 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
         if(--this.ticksAnvilStomp >= 0L && player.isOnGround())
         {
-
             System.out.println(ticksAnvilStomp);
             System.out.println(player.world.isClient);
             this.ticksAnvilStomp = 0;
@@ -112,38 +118,64 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                 anvilStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.ANVIL_STOMP, i);
             }
 
-            List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
-                    .expand(7, 2, 7));
+            if(!player.world.isClient) {
+                List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
+                        .expand(7, 2, 7));
 
 
-            list.remove(player);
-            if(!list.isEmpty()) {
-                for (LivingEntity e : list) {
-                    e.setVelocity(0,  1 + anvilStompLevel * 0.1, 0);
+                list.remove(player);
+                if (!list.isEmpty()) {
+                    for (LivingEntity e : list) {
+                        double x = 0, z = 0;
+                        double y = 0.8 + anvilStompLevel * .1;
+                        if (e instanceof PlayerEntity) {
+                            PacketByteBuf newBuf = PacketByteBufs.create();
+                            newBuf.writeDouble(x).writeDouble(y).writeDouble(z);
+                            ServerPlayNetworking.send((ServerPlayerEntity) e, ModPackets.VELOCITY_UPDATE_ID, newBuf);
+                        }
+                        e.setVelocity(x, y, z);
+
+
+                    }
+
                 }
-
+                player.world.playSound(
+                        null,
+                        new BlockPos((int) player.getX(), (int) player.getY(), (int) player.getZ()),
+                        SoundEvents.BLOCK_ANVIL_LAND,
+                        SoundCategory.PLAYERS,
+                        1f,
+                        1f
+                );
+                ((TimerAccess) player).aabilities_setAnvilStompAnimTimer(5);
             }
-            player.world.playSound(
-                    null,
-                    new BlockPos((int)player.getX(), (int)player.getY(), (int)player.getZ()),
-                    SoundEvents.BLOCK_ANVIL_LAND,
-                    SoundCategory.PLAYERS,
-                    1f,
-                    1f
-            );
-            ((TimerAccess)player).aabilities_setAnvilStompAnimTimer(5);
         }
-        else if(ticksAnvilStomp > -5)
+        else if(ticksAnvilStomp >= -5)
         {
             if(player.isOnGround())
             {
                 player.slowMovement(player.getBlockStateAtPos(), new Vec3d(0.001,0.001,0.001));
             }
-            if(player.isTouchingWater())
+            else if(player.isTouchingWater())
             {
                 ticksAnvilStomp -=2;
             }
+            if(ticksAnvilStomp == -5 && !player.world.isClient)
+            {
+                ((TimerAccess)player).aabilities_setShouldAnvilRender(false);
+                PacketByteBuf newBuf = PacketByteBufs.create();
+                newBuf.writeString("anvil_stomp");
+                newBuf.writeInt(0);
+                newBuf.writeString(player.getUuidAsString());
+                newBuf.writeBoolean(false);
+
+                for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.world, player.getBlockPos())) {
+                    ServerPlayNetworking.send(player1, ModPackets.TIMER_UPDATE_ID, newBuf);
+                    System.out.println(player1.getName());
+                }
+            }
         }
+
         if(--ticksAnvilStompAnim >= 0 && !player.world.isClient) {
             System.out.println("running");
             for (double i = 0; i <= Math.PI * 2; i += Math.PI / 6) {
@@ -384,6 +416,17 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
     public void aabilities_setAnvilStompAnimTimer(long ticks) {
         this.ticksAnvilStompAnim = ticks;
     }
+
+    @Override
+    public void aabilities_setShouldAnvilRender(boolean bool) {
+        this.shouldRenderAnvil = bool;
+    }
+
+    @Override
+    public boolean aabilities_getShouldAnvilRender() {
+        return shouldRenderAnvil;
+    }
+
     @Override
     public void aabilities_setFrostStompTimer(long ticksUntilFrostStomp) {
         this.ticksUntilFrostStomp = ticksUntilFrostStomp;

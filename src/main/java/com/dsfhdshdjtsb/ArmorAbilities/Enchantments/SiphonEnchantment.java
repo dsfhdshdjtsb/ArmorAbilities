@@ -34,12 +34,15 @@ public class SiphonEnchantment extends Enchantment {
 
     @Override
     public void onTargetDamaged(LivingEntity user, Entity target, int level) {
+
         super.onTargetDamaged(user, target, level);
 
     }
 
     @Override
     protected boolean canAccept(Enchantment other) {
+        if(other instanceof ExplodeEnchantment || other instanceof CleanseEnchantment)
+            return false;
         return super.canAccept(other);
     }
 }

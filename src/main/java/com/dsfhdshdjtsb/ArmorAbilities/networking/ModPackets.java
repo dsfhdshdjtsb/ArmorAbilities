@@ -3,7 +3,9 @@ package com.dsfhdshdjtsb.ArmorAbilities.networking;
 import com.dsfhdshdjtsb.ArmorAbilities.ArmorAbilities;
 import com.dsfhdshdjtsb.ArmorAbilities.util.TimerAccess;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -22,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ModPackets {
 
@@ -30,6 +33,7 @@ public class ModPackets {
     public static final Identifier CHEST_ABILITY_ID = new Identifier(ArmorAbilities.modid, "chest_ability");
     public static final Identifier HELMET_ABILITY_ID = new Identifier(ArmorAbilities.modid, "helmet_ability");
     public static final Identifier VELOCITY_UPDATE_ID = new Identifier(ArmorAbilities.modid, "velocity_update");
+    public static final Identifier TIMER_UPDATE_ID = new Identifier(ArmorAbilities.modid, "timer_update");
 
     public static void registerC2SPackets(){
         ServerPlayNetworking.registerGlobalReceiver(HELMET_ABILITY_ID, (MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
@@ -45,18 +49,17 @@ public class ModPackets {
             {
                 timerAccess.aabilities_setPulverizeTimer(2);
             }
-            if(name.equals("telekinesis"))
+            if(name.equals("mind_control"))
             {
+                int level = buf.readInt();
                 List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
-                        .expand(7, 7, 7));
-                list.remove(player);
+                        .expand(level * 2, level * 2, level * 2));
 
                 if(!(list.size() <= 1)) {
                     for (int i = 0; i < list.size(); i++) {
                         LivingEntity e = list.get(i);
-                        if(e instanceof MobEntity )
+                        if(e instanceof MobEntity && e.getMaxHealth() <= player.getMaxHealth() * 2 && !e.hasStatusEffect(ArmorAbilities.MIND_CONTROL_COOLDOWN_EFFECT) )
                         {
-                            System.out.println(((MobEntity) e).getTarget());
                             if( i + 1 < list.size())
                             {
                                 ((MobEntity) e).setTarget(list.get(i + 1));
@@ -66,7 +69,7 @@ public class ModPackets {
                                 ((MobEntity) e).setTarget(list.get(0));
                             }
 //                            e.addStatusEffect(new StatusEffectInstance(ArmorAbilities.MIND_CONTROLLED_EFFECT, 160, 0));
-
+                            e.addStatusEffect(new StatusEffectInstance(ArmorAbilities.MIND_CONTROL_COOLDOWN_EFFECT, 1200, 0, false, false));
                             double xdif = e.getX() - player.getX();
                             double ydif = e.getBodyY(0.5D) - player.getBodyY(0.5D);
                             double zdif = e.getZ() - player.getZ();
@@ -135,9 +138,21 @@ public class ModPackets {
 
             if(name.equals("explode"))
             {
-                timerAccess.aabiliites_setFuse(80);
+                int ticks = 80;
+                timerAccess.aabiliites_setFuse(ticks);
                 player.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0f, 1.0f);
                 //                player.world.createExplosion(player, player.getX(), player.getY(), player.getZ(), 2.0f, World.ExplosionSourceType.NONE);
+
+                PacketByteBuf newBuf = PacketByteBufs.create();
+                newBuf.writeString("explode");
+                newBuf.writeInt(ticks);
+                newBuf.writeString(player.getUuidAsString());
+                newBuf.writeBoolean(false);
+
+                for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.world, player.getBlockPos())) {
+                    ServerPlayNetworking.send(player1, TIMER_UPDATE_ID, newBuf);
+                    System.out.println(player1.getName());
+                }
             }
 
             if(name.equals("siphon"))
@@ -305,9 +320,11 @@ public class ModPackets {
             }
             if(name.equals("anvil_stomp"))
             {
+                int ticks = 200;
                 if(player.isOnGround())
                     player.jump();
-                timerAccess.aabilities_setAnvilStompTimer(200);
+                timerAccess.aabilities_setAnvilStompTimer(ticks);
+                timerAccess.aabilities_setShouldAnvilRender(true);
                 player.world.playSound(
                         null,
                         new BlockPos((int)player.getX(), (int)player.getY(), (int)player.getZ()),
@@ -316,7 +333,16 @@ public class ModPackets {
                         1f,
                         1f
                 );
+                PacketByteBuf newBuf = PacketByteBufs.create();
+                newBuf.writeString("anvil_stomp");
+                newBuf.writeInt(ticks);
+                newBuf.writeString(player.getUuidAsString());
+                newBuf.writeBoolean(true);
 
+                for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.world, player.getBlockPos())) {
+                    ServerPlayNetworking.send(player1, TIMER_UPDATE_ID, newBuf);
+                    System.out.println(player1.getName());
+                }
             }
         });
 
@@ -331,5 +357,38 @@ public class ModPackets {
                 client.player.setVelocity(velX, velY, velZ);
             System.out.println("vel update recieved");
         });
+        ClientPlayNetworking.registerGlobalReceiver(TIMER_UPDATE_ID, (client, handler, buf, responseSender) -> {
+            String name = buf.readString();
+            int ticks = buf.readInt();
+            String uuid = buf.readString();
+            boolean shouldRenderAnvil = buf.readBoolean();
+
+            if(name.equals("explode"))
+            {
+                if(client.world != null)
+                {
+                    System.out.println(client.world.getPlayerByUuid(UUID.fromString(uuid)));
+                    TimerAccess timerAccess = (TimerAccess) client.world.getPlayerByUuid((UUID.fromString(uuid)));
+                    if(timerAccess != null)
+                        timerAccess.aabiliites_setFuse(ticks);
+                }
+            }
+            else if(name.equals("anvil_stomp"))
+            {
+                if(client.world != null)
+                {
+                    System.out.println(client.world.getPlayerByUuid(UUID.fromString(uuid)));
+                    TimerAccess timerAccess = (TimerAccess) client.world.getPlayerByUuid((UUID.fromString(uuid)));
+                    if(timerAccess != null)
+                    {
+                        timerAccess.aabilities_setShouldAnvilRender(shouldRenderAnvil);
+
+                    }
+
+                }
+            }
+            System.out.println("render update recieved");
+        });
     }
+
 }

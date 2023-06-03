@@ -53,7 +53,7 @@ public class CooldownHudOverlay implements HudRenderCallback {
                     RenderSystem.setShaderColor(color, color, color, 1.0f);
                     RenderSystem.setShaderTexture(0, COOLDOWN_HELMET);
 
-                    DrawableHelper.drawTexture(matrixStack, x - 180, y - 25, 0, 0, 20, 20, 20, 20);
+                    DrawableHelper.drawTexture(matrixStack, x - 187, y - 23, 0, 0, 20, 20, 20, 20);
 //                    String cooldownText = Integer.toString((int) (curCooldown / 20));
 
 //                    textRenderer.draw(matrixStack, cooldownText, x - 180, y - 20, 0xFFFFFFFF);
@@ -70,7 +70,7 @@ public class CooldownHudOverlay implements HudRenderCallback {
                     }
                     RenderSystem.setShaderColor(color, color, color, 1.0f);
                     RenderSystem.setShaderTexture(0, COOLDOWN_CHESTPLATE);
-                    DrawableHelper.drawTexture(matrixStack, x - 165, y - 25, 0, 0, 20, 20, 20, 20);
+                    DrawableHelper.drawTexture(matrixStack, x - 172, y - 23, 0, 0, 20, 20, 20, 20);
                 }
 
                 curCooldown = timerAccess.aabilities_getLeggingCooldown();
@@ -84,7 +84,7 @@ public class CooldownHudOverlay implements HudRenderCallback {
                     }
                     RenderSystem.setShaderColor(color, color, color, 1.0f);
                     RenderSystem.setShaderTexture(0, COOLDOWN_LEGGINGS);
-                    DrawableHelper.drawTexture(matrixStack, x - 150, y - 25, 0, 0, 20, 20, 20, 20);
+                    DrawableHelper.drawTexture(matrixStack, x - 157, y - 23, 0, 0, 20, 20, 20, 20);
                 }
 
                 curCooldown = timerAccess.aabilities_getBootCooldown();
@@ -98,7 +98,7 @@ public class CooldownHudOverlay implements HudRenderCallback {
                     }
                     RenderSystem.setShaderColor(color, color, color, 1.0f);
                     RenderSystem.setShaderTexture(0, COOLDOWN_BOOTS);
-                    DrawableHelper.drawTexture(matrixStack, x - 135, y - 25, 0, 0, 20, 20, 20, 20);
+                    DrawableHelper.drawTexture(matrixStack, x - 141, y - 23, 0, 0, 20, 20, 20, 20);
 
                 }
             }

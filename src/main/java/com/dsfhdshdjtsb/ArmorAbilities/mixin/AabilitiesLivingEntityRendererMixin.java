@@ -44,7 +44,7 @@ public abstract class AabilitiesLivingEntityRendererMixin<T extends LivingEntity
         if(livingEntity instanceof PlayerEntity) {
             TimerAccess timerAccess = (TimerAccess) livingEntity;
             int fuse = (int) timerAccess.aabilities_getFuse();
-            long anvilTicks = timerAccess.aabilities_getAnvilStompTimer();
+            boolean shouldRenderAnvil = timerAccess.aabilities_getShouldAnvilRender();
             if (fuse > 0) {
                 matrixStack.push();
                 matrixStack.translate(0.0f, 0.5f, 0.0f);
@@ -63,16 +63,16 @@ public abstract class AabilitiesLivingEntityRendererMixin<T extends LivingEntity
                 matrixStack.pop();
                 ci.cancel();
             }
-            else if(anvilTicks > -5)
+            else if(shouldRenderAnvil)
             {
                 BlockState blockState = Blocks.ANVIL.getDefaultState();
                 if (blockState.getRenderType() != BlockRenderType.MODEL) {
                     return;
                 }
                 World world = livingEntity.getWorld();
-                if (blockState == world.getBlockState(livingEntity.getBlockPos()) || blockState.getRenderType() == BlockRenderType.INVISIBLE) {
-                    return;
-                }
+//                if (blockState == world.getBlockState(livingEntity.getBlockPos()) || blockState.getRenderType() == BlockRenderType.INVISIBLE) {
+//                    return;
+//                }
                 matrixStack.push();
                 BlockPos blockPos = BlockPos.ofFloored(livingEntity.getX(), livingEntity.getBoundingBox().maxY, livingEntity.getZ());
                 matrixStack.translate(-0.5, 0.0, -0.5);

@@ -5,22 +5,15 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.mob.MobEntity;
 
-public class MindControlledEffect extends StatusEffect {
-    public MindControlledEffect() {
+public class MindControllCooldownEffect extends StatusEffect {
+    public MindControllCooldownEffect() {
         super(StatusEffectCategory.HARMFUL, 0);
     }
 
 
     @Override
     public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-        if(entity instanceof MobEntity)
-        {
-            ((MobEntity) entity).setTarget(null);
-            System.out.println(((MobEntity) entity).getTarget());
-            ((MobEntity) entity).setAttacking(null);
-            entity.setAttacker(null);
 
-        }
     }
 
     @Override

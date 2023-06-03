@@ -2,7 +2,7 @@ package com.dsfhdshdjtsb.ArmorAbilities;
 
 import com.dsfhdshdjtsb.ArmorAbilities.Enchantments.*;
 import com.dsfhdshdjtsb.ArmorAbilities.StatusEffects.DodgeEffect;
-import com.dsfhdshdjtsb.ArmorAbilities.StatusEffects.MindControlledEffect;
+import com.dsfhdshdjtsb.ArmorAbilities.StatusEffects.MindControllCooldownEffect;
 import com.dsfhdshdjtsb.ArmorAbilities.config.ModConfigs;
 import com.dsfhdshdjtsb.ArmorAbilities.item.LaserProjectileItem;
 import com.dsfhdshdjtsb.ArmorAbilities.networking.ModPackets;
@@ -49,7 +49,7 @@ public class ArmorAbilities implements ModInitializer {
 
 
 	public static final StatusEffect DODGE_EFFECT = new DodgeEffect();
-	public static final StatusEffect MIND_CONTROLLED_EFFECT = new MindControlledEffect();
+	public static final StatusEffect MIND_CONTROL_COOLDOWN_EFFECT = new MindControllCooldownEffect();
 
 	public static final EntityType<LaserProjectile> LASER_PROJECTILE_ENTITY_TYPE = Registry.register(
 			Registries.ENTITY_TYPE,
@@ -91,6 +91,7 @@ public class ArmorAbilities implements ModInitializer {
 
 
 		Registry.register(Registries.STATUS_EFFECT, new Identifier("aabilities", "dodge"), DODGE_EFFECT);
+		Registry.register(Registries.STATUS_EFFECT, new Identifier("aabilities", "mind_control_cooldown"), MIND_CONTROL_COOLDOWN_EFFECT);
 		//Registry.register(Registries.STATUS_EFFECT, new Identifier("aabilities", "mind_controlled"), MIND_CONTROLLED_EFFECT);
 		Registry.register(Registries.ITEM, new Identifier("aabilities", "laser"), LASER_PROJECTILE_ITEM);
 		ModPackets.registerC2SPackets();
