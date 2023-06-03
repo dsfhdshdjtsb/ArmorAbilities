@@ -32,19 +32,21 @@ public class ArmorAbilities implements ModInitializer {
 //	public static Enchantment TRANSCEND;
 	public static Enchantment FOCUS;
 	public static Enchantment PULVERIZE;
-	public static Enchantment TELEKINESIS;
+	public static Enchantment MIND_CONTROL;
 
 	public static Enchantment CLEANSE;
 	public static Enchantment EXPLODE;
 	public static Enchantment SIPHON;
 
-	public static Enchantment BLINK;
-	public static Enchantment FROST_STOMP;
-	public static Enchantment FIRE_STOMP;
-
 	public static Enchantment DODGE;
 	public static Enchantment DASH;
 	public static Enchantment RUSH;
+	public static Enchantment BLINK;
+
+	public static Enchantment FROST_STOMP;
+	public static Enchantment FIRE_STOMP;
+	public static Enchantment ANVIL_STOMP;
+
 
 	public static final StatusEffect DODGE_EFFECT = new DodgeEffect();
 	public static final StatusEffect MIND_CONTROLLED_EFFECT = new MindControlledEffect();
@@ -71,19 +73,22 @@ public class ArmorAbilities implements ModInitializer {
 
 		FOCUS = new FocusEnchantment();
 		PULVERIZE = new PulverizeEnchantment();
-		TELEKINESIS = new TelekinesisEnchantment();
+		MIND_CONTROL = new MindControlEnchantment();
 
 		CLEANSE = new CleanseEnchantment();
 		EXPLODE = new ExplodeEnchantment();
 		SIPHON = new SiphonEnchantment();
 
-		BLINK = new BlinkEnchantment();
-		FROST_STOMP = new FrostStompEnchantment();
-		FIRE_STOMP = new FireStompEnchantment();
-
 		DODGE = new DodgeEnchantment();
 		DASH = new DashEnchantment();
 		RUSH = new RushEnchantment();
+		BLINK = new BlinkEnchantment();
+
+		FROST_STOMP = new FrostStompEnchantment();
+		FIRE_STOMP = new FireStompEnchantment();
+		ANVIL_STOMP = new AnvilStompEnchantment();
+
+
 
 		Registry.register(Registries.STATUS_EFFECT, new Identifier("aabilities", "dodge"), DODGE_EFFECT);
 		//Registry.register(Registries.STATUS_EFFECT, new Identifier("aabilities", "mind_controlled"), MIND_CONTROLLED_EFFECT);

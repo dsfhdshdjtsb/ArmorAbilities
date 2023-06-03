@@ -5,22 +5,11 @@ import com.dsfhdshdjtsb.ArmorAbilities.util.TimerAccess;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.render.entity.EntityRenderers;
-import net.minecraft.client.render.entity.TntEntityRenderer;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -30,11 +19,8 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class ModPackets {
@@ -184,6 +170,7 @@ public class ModPackets {
                             y = y + ydif/particleNumConstant;
                             z = z + zdif/particleNumConstant;
                         }
+                        ((ServerWorld) player.world).spawnParticles(ParticleTypes.HEART, player.getX(), player.getBodyY(0.5D), player.getZ(), 2, 0.4, 0.5, 0.4, 0.0D);
 
                     }
                 }
@@ -216,8 +203,36 @@ public class ModPackets {
                         1.5f,
                         1f
                 );
-
             }
+            if(name.equals("blink")) {
+
+                System.out.println("blink");
+                double posY = buf.readDouble();
+                double posX = buf.readDouble();
+                double posZ = buf.readDouble();
+
+                double velY = buf.readDouble();
+                double velX = buf.readDouble();
+                double velZ = buf.readDouble();
+
+                server.execute(() -> {
+                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.DRAGON_BREATH, player.getX(), player.getBodyY(0.5D), player.getZ(), 15, 0.3, 0.5, 0.3, 0.0D);
+                    player.setVelocity(velX, velY, velZ);
+                    player.setPos(posX, posY, posZ);
+                });
+
+                player.world.playSound(
+                        null,
+                        player.getX(),
+                        player.getY(),
+                        player.getZ(),
+                        SoundEvents.ENTITY_ENDERMAN_TELEPORT,
+                        SoundCategory.PLAYERS,
+                        0.8f,
+                        1f
+                );
+            }
+
             if(name.equals("rush"))
             {
                 int rushLevel = buf.readInt();
@@ -249,7 +264,12 @@ public class ModPackets {
                         1.5f,
                         1f
                 );
+                if(player.world instanceof ServerWorld)
+                {
+                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.ANGRY_VILLAGER, player.getX(), player.getBodyY(0.5D), player.getZ(), 3, 0.4, 0.5, 0.4, 0.0D);
+                }
             }
+
             if(name.equals("dodge"))
             {
 
@@ -263,46 +283,40 @@ public class ModPackets {
             String name = buf.readString();
             TimerAccess timerAccess =  ((TimerAccess) player);
 
-            if(name.equals("blink")) {
 
-                System.out.println("blink");
-                double posY = buf.readDouble();
-                double posX = buf.readDouble();
-                double posZ = buf.readDouble();
-
-                double velY = buf.readDouble();
-                double velX = buf.readDouble();
-                double velZ = buf.readDouble();
-
-                server.execute(() -> {
-                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.DRAGON_BREATH, player.getX(), player.getBodyY(0.5D), player.getZ(), 15, 0.3, 0.5, 0.3, 0.0D);
-                    player.setVelocity(velX, velY, velZ);
-                    player.setPos(posX, posY, posZ);
-                });
-
-                player.world.playSound(
-                        null,
-                        player.getX(),
-                        player.getY(),
-                        player.getZ(),
-                        SoundEvents.ENTITY_ENDERMAN_TELEPORT,
-                        SoundCategory.PLAYERS,
-                        0.8f,
-                        1f
-                );
-            }
 
             if(name.equals("fire_stomp"))
             {
+                if(player.isOnGround())
+                    player.jump();
                 timerAccess.aabilities_setFireStompTimer(100);
 //                if(player.isOnGround())
 //                    player.addVelocity(new Vec3d(0, 0.5, 0));
+
             }
             if(name.equals("frost_stomp"))
             {
+                if(player.isOnGround())
+                    player.jump();
                 timerAccess.aabilities_setFrostStompTimer(100);
 //                if(player.isOnGround())
 //                    player.addVelocity(new Vec3d(0, 0.5, 0));
+
+            }
+            if(name.equals("anvil_stomp"))
+            {
+                if(player.isOnGround())
+                    player.jump();
+                timerAccess.aabilities_setAnvilStompTimer(200);
+                player.world.playSound(
+                        null,
+                        new BlockPos((int)player.getX(), (int)player.getY(), (int)player.getZ()),
+                        SoundEvents.BLOCK_COPPER_PLACE,
+                        SoundCategory.PLAYERS,
+                        1f,
+                        1f
+                );
+
             }
         });
 

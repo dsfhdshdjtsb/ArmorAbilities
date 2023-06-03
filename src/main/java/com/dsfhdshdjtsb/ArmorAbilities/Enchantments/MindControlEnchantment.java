@@ -10,11 +10,11 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public class TelekinesisEnchantment extends Enchantment {
-    public TelekinesisEnchantment() {
+public class MindControlEnchantment extends Enchantment {
+    public MindControlEnchantment() {
         super(Rarity.COMMON, EnchantmentTarget.ARMOR_HEAD, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
-        if(ModConfigs.TELEKINESIS)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "telekinesis"), this);
+        if(ModConfigs.MIND_CONTROL)
+            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "mind_control"), this);
     }
 
     @Override

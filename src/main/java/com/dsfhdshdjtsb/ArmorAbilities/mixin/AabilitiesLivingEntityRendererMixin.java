@@ -2,9 +2,15 @@ package com.dsfhdshdjtsb.ArmorAbilities.mixin;
 
 import com.dsfhdshdjtsb.ArmorAbilities.ArmorAbilities;
 import com.dsfhdshdjtsb.ArmorAbilities.util.TimerAccess;
+import net.minecraft.block.AnvilBlock;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -12,8 +18,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,9 +42,9 @@ public abstract class AabilitiesLivingEntityRendererMixin<T extends LivingEntity
     private void render(T livingEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci)
     {
         if(livingEntity instanceof PlayerEntity) {
-            System.out.println(livingEntity.world.isClient());
             TimerAccess timerAccess = (TimerAccess) livingEntity;
             int fuse = (int) timerAccess.aabilities_getFuse();
+            long anvilTicks = timerAccess.aabilities_getAnvilStompTimer();
             if (fuse > 0) {
                 matrixStack.push();
                 matrixStack.translate(0.0f, 0.5f, 0.0f);
@@ -54,7 +63,26 @@ public abstract class AabilitiesLivingEntityRendererMixin<T extends LivingEntity
                 matrixStack.pop();
                 ci.cancel();
             }
+            else if(anvilTicks > -5)
+            {
+                BlockState blockState = Blocks.ANVIL.getDefaultState();
+                if (blockState.getRenderType() != BlockRenderType.MODEL) {
+                    return;
+                }
+                World world = livingEntity.getWorld();
+                if (blockState == world.getBlockState(livingEntity.getBlockPos()) || blockState.getRenderType() == BlockRenderType.INVISIBLE) {
+                    return;
+                }
+                matrixStack.push();
+                BlockPos blockPos = BlockPos.ofFloored(livingEntity.getX(), livingEntity.getBoundingBox().maxY, livingEntity.getZ());
+                matrixStack.translate(-0.5, 0.0, -0.5);
+                BlockRenderManager blockRenderManager = MinecraftClient.getInstance().getBlockRenderManager();
+                blockRenderManager.getModelRenderer().render(world, blockRenderManager.getModel(blockState), blockState, blockPos, matrixStack, vertexConsumerProvider.getBuffer(RenderLayers.getMovingBlockLayer(blockState)), false, Random.create(), blockState.getRenderingSeed(livingEntity.getBlockPos()), OverlayTexture.DEFAULT_UV);
+                matrixStack.pop();
+                ci.cancel();
+            }
         }
+
     }
 
 

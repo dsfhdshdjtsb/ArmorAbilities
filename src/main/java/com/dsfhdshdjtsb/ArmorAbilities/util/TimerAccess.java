@@ -13,6 +13,9 @@ public interface TimerAccess {
 
     void aabiliites_setFuse(long ticks);
 
+    void aabilities_setAnvilStompTimer(long ticks);
+    void aabilities_setAnvilStompAnimTimer(long ticks);
+
     void aabilities_setHelmetCooldown(long ticks);
     void aabilities_setChestCooldown(long ticks);
     void aabilities_setLeggingCooldown(long ticks);
@@ -24,5 +27,6 @@ public interface TimerAccess {
     long aabilities_getBootCooldown();
 
     long aabilities_getFuse();
+    long aabilities_getAnvilStompTimer();
 
 }

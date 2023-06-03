@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 
 public class BlinkEnchantment  extends Enchantment {
     public BlinkEnchantment() {
-        super(Rarity.COMMON, EnchantmentTarget.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super(Rarity.COMMON, EnchantmentTarget.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
         if(ModConfigs.BLINK)
             Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "blink"), this);
     }
@@ -34,7 +34,7 @@ public class BlinkEnchantment  extends Enchantment {
 
     @Override
     protected boolean canAccept(Enchantment other) {
-        if(other instanceof FrostStompEnchantment|| other instanceof FireStompEnchantment)
+        if(other instanceof DashEnchantment|| other instanceof RushEnchantment)
             return false;
         return super.canAccept(other);
     }

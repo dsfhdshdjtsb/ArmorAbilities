@@ -1,7 +1,6 @@
 package com.dsfhdshdjtsb.ArmorAbilities.Enchantments;
 
 import com.dsfhdshdjtsb.ArmorAbilities.config.ModConfigs;
-import com.dsfhdshdjtsb.ArmorAbilities.mixin.AabilitiesLivingEntityMixin;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;

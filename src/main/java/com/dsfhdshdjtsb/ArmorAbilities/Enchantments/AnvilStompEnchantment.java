@@ -4,16 +4,15 @@ import com.dsfhdshdjtsb.ArmorAbilities.config.ModConfigs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public class RushEnchantment  extends Enchantment {
-    public RushEnchantment() {
-        super(Rarity.COMMON, EnchantmentTarget.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
-        if(ModConfigs.RUSH)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "rush"), this);
+public class AnvilStompEnchantment extends Enchantment {
+    public AnvilStompEnchantment() {
+        super(Rarity.COMMON, EnchantmentTarget.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        if(ModConfigs.ANVIL_STOMP)
+            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "anvil_stomp"), this);
     }
 
     @Override
@@ -33,7 +32,7 @@ public class RushEnchantment  extends Enchantment {
 
     @Override
     protected boolean canAccept(Enchantment other) {
-        if(other instanceof BlinkEnchantment || other instanceof DashEnchantment)
+        if(other instanceof FrostStompEnchantment|| other instanceof BlinkEnchantment)
             return false;
         return super.canAccept(other);
     }

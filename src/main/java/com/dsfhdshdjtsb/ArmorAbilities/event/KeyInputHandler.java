@@ -1,28 +1,21 @@
 package com.dsfhdshdjtsb.ArmorAbilities.event;
 
 import com.dsfhdshdjtsb.ArmorAbilities.ArmorAbilities;
-import com.dsfhdshdjtsb.ArmorAbilities.mixin.AabilitiesLivingEntityMixin;
 import com.dsfhdshdjtsb.ArmorAbilities.networking.ModPackets;
 import com.dsfhdshdjtsb.ArmorAbilities.util.TimerAccess;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
-import org.spongepowered.asm.launch.GlobalProperties;
 
 import java.util.List;
 
@@ -75,7 +68,7 @@ public class KeyInputHandler {
 
                         for (ItemStack i : client.player.getArmorItems()) {
                             pulverizeLevel += EnchantmentHelper.getLevel(ArmorAbilities.PULVERIZE, i);
-                            telekinesisLevel += EnchantmentHelper.getLevel(ArmorAbilities.TELEKINESIS, i);
+                            telekinesisLevel += EnchantmentHelper.getLevel(ArmorAbilities.MIND_CONTROL, i);
                             focusLevel += EnchantmentHelper.getLevel(ArmorAbilities.FOCUS, i);
                         }
                         if(focusLevel > 0)
@@ -145,11 +138,13 @@ public class KeyInputHandler {
                         }
 
                         if (explodeLevel > 0) {
-                            cooldown = 300 - explodeLevel * 20;
-                            PacketByteBuf buf = PacketByteBufs.create();
-                            timerAccess.aabiliites_setFuse(80);
-                            buf.writeString("explode");
-                            ClientPlayNetworking.send(ModPackets.CHEST_ABILITY_ID, buf);
+                            if(timerAccess.aabilities_getAnvilStompTimer() < 0) {
+                                cooldown = 300 - explodeLevel * 20;
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                timerAccess.aabiliites_setFuse(80);
+                                buf.writeString("explode");
+                                ClientPlayNetworking.send(ModPackets.CHEST_ABILITY_ID, buf);
+                            }
                         }
                         if (siphonLevel > 0){
                             List<LivingEntity> list = client.player.world.getNonSpectatingEntities(LivingEntity.class, client.player.getBoundingBox()
@@ -178,8 +173,10 @@ public class KeyInputHandler {
                         int dashLevel = 0;
                         int dodgeLevel = 0;
                         int rushLevel = 0;
+                        int blinkLevel = 0;
 
                         for (ItemStack i : client.player.getArmorItems()) {
+                            blinkLevel += EnchantmentHelper.getLevel(ArmorAbilities.BLINK, i);
                             dashLevel += EnchantmentHelper.getLevel(ArmorAbilities.DASH, i);
                             dodgeLevel += EnchantmentHelper.getLevel(ArmorAbilities.DODGE, i);
                             rushLevel += EnchantmentHelper.getLevel(ArmorAbilities.RUSH, i);
@@ -215,37 +212,6 @@ public class KeyInputHandler {
                             ClientPlayNetworking.send(ModPackets.LEGGING_ABILITY_ID, buf);
 
                         }
-                        if (dodgeLevel > 0) {
-                            cooldown = 300 - rushLevel * 20;
-                            PacketByteBuf buf = PacketByteBufs.create();
-                            buf.writeString("dodge");
-                            ClientPlayNetworking.send(ModPackets.LEGGING_ABILITY_ID, buf);
-                        }
-                        timerAccess.aabilities_setLeggingCooldown(cooldown);
-
-                    }
-                }
-            }
-        });
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (KEY_BOOT_ABILITY.wasPressed()) {
-                System.out.println("Boot ability pressed");
-                if(client.player != null){
-                    TimerAccess timerAccess = ((TimerAccess) client.player);
-                    if(timerAccess.aabilities_getBootCooldown() <= 0) {
-                        int cooldown = 0;
-                        int blinkLevel = 0;
-                        int fireStompLevel = 0;
-                        int frostStompLevel = 0;
-
-
-                        for (ItemStack i : client.player.getArmorItems()) {
-                            blinkLevel += EnchantmentHelper.getLevel(ArmorAbilities.BLINK, i);
-                            fireStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.FIRE_STOMP, i);
-                            frostStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.FROST_STOMP, i);
-
-                        }
-
                         if (blinkLevel > 0) {
 
                             double rads = client.player.getYaw() * Math.PI / 180;
@@ -270,12 +236,46 @@ public class KeyInputHandler {
                             if (!blockState.getMaterial().blocksMovement()) {
                                 client.player.setPos(posX, posY, posZ);
                                 client.player.setVelocity(velX, velY, velZ);
-                                ClientPlayNetworking.send(ModPackets.BOOT_ABILITY_ID, buf);
+                                ClientPlayNetworking.send(ModPackets.LEGGING_ABILITY_ID, buf);
                                 cooldown = 400 - blinkLevel * 40;
                             }
                         }
+
+                        if (dodgeLevel > 0) {
+                            cooldown = 300 - rushLevel * 20;
+                            PacketByteBuf buf = PacketByteBufs.create();
+                            buf.writeString("dodge");
+                            ClientPlayNetworking.send(ModPackets.LEGGING_ABILITY_ID, buf);
+                        }
+                        timerAccess.aabilities_setLeggingCooldown(cooldown);
+
+                    }
+                }
+            }
+        });
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (KEY_BOOT_ABILITY.wasPressed()) {
+                System.out.println("Boot ability pressed");
+                if(client.player != null){
+                    TimerAccess timerAccess = ((TimerAccess) client.player);
+                    if(timerAccess.aabilities_getBootCooldown() <= 0) {
+                        int cooldown = 0;
+                        int fireStompLevel = 0;
+                        int frostStompLevel = 0;
+                        int anvilStompLevel = 0;
+
+                        for (ItemStack i : client.player.getArmorItems()) {
+
+                            fireStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.FIRE_STOMP, i);
+                            frostStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.FROST_STOMP, i);
+                            anvilStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.ANVIL_STOMP, i);
+                        }
+
                         if (fireStompLevel > 0) {
                             cooldown = 300 - fireStompLevel * 20;
+                            if (client.player.isOnGround())
+                                client.player.jump();
+
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("fire_stomp");
                             buf.writeInt(fireStompLevel);
@@ -286,12 +286,28 @@ public class KeyInputHandler {
                         }
                         if (frostStompLevel > 0) {
                             cooldown = 300 - frostStompLevel * 20;
+                            if (client.player.isOnGround())
+                                client.player.jump();
+
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("frost_stomp");
                             buf.writeInt(frostStompLevel);
 //                        if(client.player.isOnGround())
 //                            client.player.addVelocity(new Vec3d(0, 0.5, 0));
                             ClientPlayNetworking.send(ModPackets.BOOT_ABILITY_ID, buf);
+                        }
+                        if(anvilStompLevel > 0)
+                        {
+                            if(timerAccess.aabilities_getFuse() < 0 && !client.player.isFallFlying() && !client.player.isRiding()) {
+                                cooldown = 300 - anvilStompLevel * 20;
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                buf.writeString("anvil_stomp");
+                                buf.writeInt(anvilStompLevel);
+                                if (client.player.isOnGround())
+                                    client.player.jump();
+                                ClientPlayNetworking.send(ModPackets.BOOT_ABILITY_ID, buf);
+                                timerAccess.aabilities_setAnvilStompTimer(200);
+                            }
                         }
                         System.out.println("cooldown: " + cooldown);
                         timerAccess.aabilities_setBootCooldown(cooldown);

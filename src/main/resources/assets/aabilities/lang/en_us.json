@@ -1,9 +1,17 @@
 {
+  "enchantment.aabilities.focus": "Focus",
+  "enchantment.aabilities.mind_control": "Mind Control",
+  "enchantment.aabilities.siphon": "Siphon",
+  "enchantment.aabilities.cleanse": "Cleanse",
+  "enchantment.aabilities.explode": "Explode",
   "enchantment.aabilities.blink": "Blink",
   "enchantment.aabilities.dash": "Dash",
-  "enchantment.aabilities.frost_stomp": "Frost Stomp",
-  "enchantment.aabilities.fire_stomp": "Fire Stomp",
   "enchantment.aabilities.rush": "Rush",
   "enchantment.aabilities.dodge": "Dodge",
+  "enchantment.aabilities.frost_stomp": "Frost Stomp",
+  "enchantment.aabilities.fire_stomp": "Fire Stomp",
+  "enchantment.aabilities.anvil_stomp": "Anvil Stomp",
+
+
   "effect.aabilities.dodge": "Dodge"
 }

@@ -33,6 +33,8 @@ public class DashEnchantment  extends Enchantment {
 
     @Override
     protected boolean canAccept(Enchantment other) {
+        if(other instanceof BlinkEnchantment || other instanceof RushEnchantment)
+            return false;
         return super.canAccept(other);
     }
 }
