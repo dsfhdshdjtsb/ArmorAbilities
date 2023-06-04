@@ -70,9 +70,6 @@ public abstract class AabilitiesLivingEntityRendererMixin<T extends LivingEntity
                     return;
                 }
                 World world = livingEntity.getWorld();
-//                if (blockState == world.getBlockState(livingEntity.getBlockPos()) || blockState.getRenderType() == BlockRenderType.INVISIBLE) {
-//                    return;
-//                }
                 matrixStack.push();
                 BlockPos blockPos = BlockPos.ofFloored(livingEntity.getX(), livingEntity.getBoundingBox().maxY, livingEntity.getZ());
                 matrixStack.translate(-0.5, 0.0, -0.5);
@@ -82,8 +79,5 @@ public abstract class AabilitiesLivingEntityRendererMixin<T extends LivingEntity
                 ci.cancel();
             }
         }
-
     }
-
-
 }

@@ -3,16 +3,18 @@ package com.dsfhdshdjtsb.ArmorAbilities.Enchantments;
 import com.dsfhdshdjtsb.ArmorAbilities.config.ModConfigs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public class PulverizeEnchantment extends Enchantment {
-    public PulverizeEnchantment() {
+public class TelekinesisEnchantment extends Enchantment {
+    public TelekinesisEnchantment() {
         super(Rarity.COMMON, EnchantmentTarget.ARMOR_HEAD, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
-        if(ModConfigs.PULVERIZE)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "pulverize"), this);
+        if(ModConfigs.TELEKINESIS)
+            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "telekinesis"), this);
     }
 
     @Override
@@ -31,7 +33,17 @@ public class PulverizeEnchantment extends Enchantment {
     }
 
     @Override
+    public void onTargetDamaged(LivingEntity user, Entity target, int level) {
+
+        super.onTargetDamaged(user, target, level);
+
+
+    }
+
+    @Override
     protected boolean canAccept(Enchantment other) {
+        if(other instanceof FocusEnchantment || other instanceof MindControlEnchantment)
+            return false;
         return super.canAccept(other);
     }
 }

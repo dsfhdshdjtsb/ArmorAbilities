@@ -41,7 +41,7 @@ public class CleanseEnchantment extends Enchantment {
 
     @Override
     protected boolean canAccept(Enchantment other) {
-        if(other instanceof ExplodeEnchantment || other instanceof CleanseEnchantment)
+        if(other instanceof ExplodeEnchantment || other instanceof SiphonEnchantment)
             return false;
         return super.canAccept(other);
     }

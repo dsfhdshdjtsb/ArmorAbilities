@@ -32,6 +32,8 @@ public class FocusEnchantment extends Enchantment {
 
     @Override
     protected boolean canAccept(Enchantment other) {
+        if(other instanceof MindControlEnchantment || other instanceof TelekinesisEnchantment)
+            return false;
         return super.canAccept(other);
     }
 }

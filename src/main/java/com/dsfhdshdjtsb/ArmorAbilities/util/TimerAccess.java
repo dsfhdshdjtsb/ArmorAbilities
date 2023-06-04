@@ -2,14 +2,12 @@ package com.dsfhdshdjtsb.ArmorAbilities.util;
 
 public interface TimerAccess {
 
-    void aabilities_setPulverizeTimer(long ticks);
     void aabilities_setFireStompTimer(long ticksUntilFireStomp);
     void aabilities_setFireStompAnimTimer(long ticksUntilFireStomp);
 
     void aabilities_setFrostStompTimer(long ticksUntilFrostStomp);
     void aabilities_setFrostStompAnimTimer(long ticksUntilFrostStomp);
 
-    void aabilities_setTranscendTimer(long ticks);
 
     void aabiliites_setFuse(long ticks);
 

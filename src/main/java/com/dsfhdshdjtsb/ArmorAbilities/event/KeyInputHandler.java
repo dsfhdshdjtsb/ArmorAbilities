@@ -66,11 +66,12 @@ public class KeyInputHandler {
                         int pulverizeLevel = 0;
                         int mindControlLevel = 0;
                         int focusLevel = 0;
+                        int telekinesisLevel = 0;
 
                         for (ItemStack i : client.player.getArmorItems()) {
-                            pulverizeLevel += EnchantmentHelper.getLevel(ArmorAbilities.PULVERIZE, i);
                             mindControlLevel += EnchantmentHelper.getLevel(ArmorAbilities.MIND_CONTROL, i);
                             focusLevel += EnchantmentHelper.getLevel(ArmorAbilities.FOCUS, i);
+                            telekinesisLevel += EnchantmentHelper.getLevel(ArmorAbilities.TELEKINESIS, i);
                         }
                         if(focusLevel > 0)
                         {
@@ -83,21 +84,29 @@ public class KeyInputHandler {
                             timerAccess.aabilities_setLeggingCooldown(0);
                             timerAccess.aabilities_setBootCooldown(0);
                         }
-                        if(pulverizeLevel > 0)
-                        {
-                            PacketByteBuf buf = PacketByteBufs.create();
-                            buf.writeString("pulverize");
-                            ClientPlayNetworking.send(ModPackets.HELMET_ABILITY_ID, buf);
-                        }
                         if(mindControlLevel > 0)
                         {
                             List<MobEntity> list = client.player.world.getNonSpectatingEntities(MobEntity.class, client.player.getBoundingBox()
-                                    .expand(6, 1.0D, 6));
+                                    .expand(mindControlLevel * 2, mindControlLevel * 2, mindControlLevel * 2));
                             if(list.size() > 0) {
                                 cooldown = 600 - mindControlLevel * 40;
                                 PacketByteBuf buf = PacketByteBufs.create();
                                 buf.writeString("mind_control");
                                 buf.writeInt(mindControlLevel);
+                                ClientPlayNetworking.send(ModPackets.HELMET_ABILITY_ID, buf);
+                            }
+                        }
+                        if(telekinesisLevel > 0)
+                        {
+                            List<LivingEntity> list = client.player.world.getNonSpectatingEntities(LivingEntity.class, client.player.getBoundingBox()
+                                    .expand(telekinesisLevel * 2, 2, telekinesisLevel * 2));
+
+                            System.out.println(list.size());
+                            if(list.size() > 1) {
+                                cooldown = 300 - telekinesisLevel * 20;
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                buf.writeString("telekinesis");
+                                buf.writeInt(telekinesisLevel);
                                 ClientPlayNetworking.send(ModPackets.HELMET_ABILITY_ID, buf);
                             }
                         }
@@ -113,18 +122,6 @@ public class KeyInputHandler {
                     TimerAccess timerAccess =  ((TimerAccess) client.player);
                     if(timerAccess.aabilities_getChestCooldown() <= 0) {
 
-//                    int transcendLevel = 0;
-//
-//                    for (ItemStack i : client.player.getArmorItems()) {
-//                        transcendLevel += EnchantmentHelper.getLevel(ArmorAbilities.TRANSCEND, i);
-//                    }
-//
-//                    if(transcendLevel > 0){
-//                        client.player.addVelocity(new Vec3d(0, 1.5, 0));
-//                        PacketByteBuf buf = PacketByteBufs.create();
-//                        buf.writeString("transcend");
-//                        ClientPlayNetworking.send(ModPackets.CHEST_ABILITY_ID, buf);
-//                    }
 
                         int cleanseLevel = 0;
                         int explodeLevel = 0;
@@ -178,14 +175,12 @@ public class KeyInputHandler {
                     if(timerAccess.aabilities_getLeggingCooldown() <= 0) {
                         int cooldown = 0;
                         int dashLevel = 0;
-                        int dodgeLevel = 0;
                         int rushLevel = 0;
                         int blinkLevel = 0;
 
                         for (ItemStack i : client.player.getArmorItems()) {
                             blinkLevel += EnchantmentHelper.getLevel(ArmorAbilities.BLINK, i);
                             dashLevel += EnchantmentHelper.getLevel(ArmorAbilities.DASH, i);
-                            dodgeLevel += EnchantmentHelper.getLevel(ArmorAbilities.DODGE, i);
                             rushLevel += EnchantmentHelper.getLevel(ArmorAbilities.RUSH, i);
                         }
 
@@ -248,12 +243,6 @@ public class KeyInputHandler {
                             }
                         }
 
-                        if (dodgeLevel > 0) {
-                            cooldown = 300 - rushLevel * 20;
-                            PacketByteBuf buf = PacketByteBufs.create();
-                            buf.writeString("dodge");
-                            ClientPlayNetworking.send(ModPackets.LEGGING_ABILITY_ID, buf);
-                        }
                         timerAccess.aabilities_setLeggingCooldown(cooldown);
 
                     }
@@ -262,7 +251,6 @@ public class KeyInputHandler {
         });
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (KEY_BOOT_ABILITY.wasPressed()) {
-                System.out.println("Boot ability pressed");
                 if(client.player != null){
                     TimerAccess timerAccess = ((TimerAccess) client.player);
                     if(timerAccess.aabilities_getBootCooldown() <= 0) {
@@ -286,8 +274,6 @@ public class KeyInputHandler {
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("fire_stomp");
                             buf.writeInt(fireStompLevel);
-//                        if(client.player.isOnGround())
-//                            client.player.addVelocity(new Vec3d(0, 0.5, 0));
                             ClientPlayNetworking.send(ModPackets.BOOT_ABILITY_ID, buf);
 
                         }
@@ -299,8 +285,6 @@ public class KeyInputHandler {
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("frost_stomp");
                             buf.writeInt(frostStompLevel);
-//                        if(client.player.isOnGround())
-//                            client.player.addVelocity(new Vec3d(0, 0.5, 0));
                             ClientPlayNetworking.send(ModPackets.BOOT_ABILITY_ID, buf);
                         }
                         if(anvilStompLevel > 0)
@@ -316,7 +300,6 @@ public class KeyInputHandler {
                                 timerAccess.aabilities_setAnvilStompTimer(200);
                             }
                         }
-                        System.out.println("cooldown: " + cooldown);
                         timerAccess.aabilities_setBootCooldown(cooldown);
                     }
                 }

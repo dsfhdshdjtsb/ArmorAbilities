@@ -21,14 +21,13 @@ public class CooldownHudOverlay implements HudRenderCallback {
     @Override
     public void onHudRender(MatrixStack matrixStack, float tickDelta) {
 
-        int x = 0;
-        int y = 0;
+        int x;
+        int y;
         MinecraftClient client = MinecraftClient.getInstance();
 
 
         if(client != null)
         {
-            TextRenderer textRenderer = client.textRenderer;
             TimerAccess timerAccess =  ((TimerAccess) client.player);
             int width = client.getWindow().getScaledWidth();
             int height = client.getWindow().getScaledHeight();
@@ -54,9 +53,6 @@ public class CooldownHudOverlay implements HudRenderCallback {
                     RenderSystem.setShaderTexture(0, COOLDOWN_HELMET);
 
                     DrawableHelper.drawTexture(matrixStack, x - 187, y - 23, 0, 0, 20, 20, 20, 20);
-//                    String cooldownText = Integer.toString((int) (curCooldown / 20));
-
-//                    textRenderer.draw(matrixStack, cooldownText, x - 180, y - 20, 0xFFFFFFFF);
                 }
 
                 curCooldown = timerAccess.aabilities_getChestCooldown();

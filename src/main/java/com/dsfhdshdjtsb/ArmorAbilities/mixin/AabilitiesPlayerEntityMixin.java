@@ -44,8 +44,6 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
     private long ticksFireStompAnim = -1;
     private long ticksUntilFrostStomp;
     private long ticksFrostStompAnim = -1;
-    private long ticksTranscend;
-    private long ticksPulverize;
     private long ticksAnvilStomp = -5;
     private long ticksAnvilStompAnim = 0;
     public long helmetCooldown = 0;
@@ -56,14 +54,9 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
     private long fuse = 0;
 
-    @Inject(at = @At("HEAD"), method = "damage", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "damage")
     private void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         PlayerEntity player = (PlayerEntity) ((Object)this);
-        if(player.hasStatusEffect(ArmorAbilities.DODGE_EFFECT))
-        {
-            ((ServerWorld) player.world).spawnParticles(ParticleTypes.POOF, player.getX(), player.getBodyY(0.5D), player.getZ(), 5, 0.3, 0.5, 0.3, 0.0D);
-            cir.cancel();
-        }
         if(((TimerAccess) player).aabilities_getAnvilStompTimer() > -5)
         {
             cir.cancel();
@@ -72,7 +65,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
     @Inject(at = @At("HEAD"), method = "attack", cancellable = true)
     private void attack(Entity target, CallbackInfo ci)
     {
-        TimerAccess timerAccess = (TimerAccess) ((PlayerEntity) ((Object)this));
+        TimerAccess timerAccess = (this);
         if(timerAccess.aabilities_getAnvilStompTimer() > -5 || timerAccess.aabilities_getFuse() > 0)
         {
             ci.cancel();
@@ -94,12 +87,12 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
             if(fuse == 0)
             {
-                float explodeLevel = 2.5f;
+                float explodeLevel = 0;
                 for (ItemStack i : player.getArmorItems()) {
-                    explodeLevel += 0.5 * EnchantmentHelper.getLevel(ArmorAbilities.EXPLODE, i);
+                    explodeLevel += EnchantmentHelper.getLevel(ArmorAbilities.EXPLODE, i);
                 }
                 if(!player.world.isClient())
-                    player.world.createExplosion(player, player.getX(), player.getBodyY(0.0625D), player.getZ(), explodeLevel, World.ExplosionSourceType.NONE);
+                    player.world.createExplosion(player, player.getX(), player.getBodyY(0.0625D), player.getZ(), 1.5f + 0.5f * explodeLevel, World.ExplosionSourceType.NONE);
             }
             if(player.isOnGround())
             {
@@ -109,8 +102,6 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
         if(--this.ticksAnvilStomp >= 0L && player.isOnGround())
         {
-            System.out.println(ticksAnvilStomp);
-            System.out.println(player.world.isClient);
             this.ticksAnvilStomp = 0;
 
             int anvilStompLevel = 0;
@@ -120,7 +111,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
             if(!player.world.isClient) {
                 List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
-                        .expand(7, 2, 7));
+                        .expand(7, 1, 7));
 
 
                 list.remove(player);
@@ -134,10 +125,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                             ServerPlayNetworking.send((ServerPlayerEntity) e, ModPackets.VELOCITY_UPDATE_ID, newBuf);
                         }
                         e.setVelocity(x, y, z);
-
-
                     }
-
                 }
                 player.world.playSound(
                         null,
@@ -158,7 +146,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
             }
             else if(player.isTouchingWater())
             {
-                ticksAnvilStomp -=2;
+                ticksAnvilStomp = Math.max(ticksAnvilStomp - 2, -5);
             }
             if(ticksAnvilStomp == -5 && !player.world.isClient)
             {
@@ -171,13 +159,11 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
                 for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.world, player.getBlockPos())) {
                     ServerPlayNetworking.send(player1, ModPackets.TIMER_UPDATE_ID, newBuf);
-                    System.out.println(player1.getName());
                 }
             }
         }
 
         if(--ticksAnvilStompAnim >= 0 && !player.world.isClient) {
-            System.out.println("running");
             for (double i = 0; i <= Math.PI * 2; i += Math.PI / 6) {
 
                 double x = player.getX() + Math.sin(i) * (7 - ticksAnvilStompAnim * 1.5);
@@ -191,84 +177,6 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
             }
         }
-
-
-
-//        if(--this.ticksPulverize >= 0L)
-//        {
-//            List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
-//                    .expand(7, 7, 7));
-//
-//            double playerX = player.getX();
-//            double playerY = player.getY();
-//            double playerZ = player.getZ();
-//            double playerYaw = player.getYaw();
-//            double playerPitch = player.getPitch();
-//
-//
-//            double maxPitchRads = Math.min(Math.PI / 2, (playerPitch + 45) * Math.PI / 180);
-//            double minPitchRads = Math.max(Math.PI / -2, (playerPitch - 45) * Math.PI / 180);
-//            double length = 7;
-//
-//            double maxY = Math.min(playerY, -Math.sin(maxPitchRads) * length + playerY);
-//            double minY = Math.max(playerY, -Math.sin(minPitchRads) * length + playerY);
-//            double mult = Math.cos(playerPitch) * length + 1;
-//
-//            double maxRads = ((playerYaw - 45));
-//            if(maxRads > 180)
-//            {
-//                maxRads = -180 + maxRads % 180;
-//            }
-//            double minRads = ((playerYaw + 45));
-//            if(minRads < -180)
-//            {
-//                minRads = 180 + minRads % 180;
-//            }
-//
-//            double maxX = Math.max(playerX, Math.sin(maxRads) * mult + playerX);
-//            double minX = Math.min(playerX, Math.sin(minRads) * mult + playerX);
-//
-//            double maxZ = Math.max(playerZ, Math.cos(maxRads) * mult + playerZ);
-//            double minZ = Math.min(playerZ, Math.cos(minRads) * mult + playerZ);
-//
-//            System.out.println("pitch: " + playerPitch);
-//            System.out.println("Max pitch: " + maxPitchRads);
-//            System.out.println("Min pitch: " + minPitchRads);
-//            System.out.println("mult: " + mult);
-//            System.out.println("yaw: " + playerYaw);
-//            System.out.println("max yaw: " + maxRads);
-//            System.out.println("min yaw: " + minRads);
-//            System.out.println("maxY: " + maxY);
-//            System.out.println("minY: " + minY);
-//            System.out.println("maxX: " + maxX);
-//            System.out.println("minX: " + minX);
-//            System.out.println("maxZ: " + maxZ);
-//            System.out.println("minZ: " + minZ);
-//            System.out.println(-Math.sin(maxRads) * mult + playerX);
-//            System.out.println(-Math.sin(minRads) * mult + playerX);
-//            System.out.println("sin: " + -Math.sin(maxRads));
-//
-//        }
-//        if(--this.ticksTranscend >= 0L)
-//        {
-//            if(this.ticksTranscend < 185)
-//            {
-//                if(this.ticksTranscend > 180)
-//                {
-//                    player.addStatusEffect(new StatusEffectInstance(StatusEffects.HEALTH_BOOST, 600, 4));
-//                    player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 180, 2));
-//                }
-//                player.setVelocity(0, 0, 0);
-//                PacketByteBuf buf = PacketByteBufs.create();
-//                buf.writeDouble(0);
-//                buf.writeDouble(0);
-//                buf.writeDouble(0);
-//                ServerPlayNetworking.send((ServerPlayerEntity) player, ModPackets.VELOCITY_UPDATE_ID, buf);
-//                BeaconBlockEntity.BeamSegment beamSegment = new BeaconBlockEntity.BeamSegment(new float[]{255, 255, 255});
-//                BeaconBlockEntity test = new BeaconBlockEntity(new BlockPos((int)player.getX(), (int)player.getY(), (int)player.getZ()), null);
-//                BeaconBlockEntityRenderer renderer = new BeaconBlockEntityRenderer(null);
-//            }
-//        }
         if(--this.ticksUntilFireStomp >= 0L && (player).isOnGround())
         {
             this.ticksUntilFireStomp = 0;
@@ -278,7 +186,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
             }
 
             List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
-                    .expand(7, 2, 7));
+                    .expand(7, 1, 7));
 
             list.remove(player);
             if(!list.isEmpty()) {
@@ -339,9 +247,8 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                     frostStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.FROST_STOMP, i);
                 }
 
-                System.out.println(player.world.isClient);
                 List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
-                        .expand(7, 2, 7));
+                        .expand(7, 1, 7));
 
                 list.remove(player);
                 if (!list.isEmpty()) {
@@ -371,12 +278,6 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
         if(--ticksFrostStompAnim >= 0 && !player.world.isClient)
         {
             for (double i = 0; i <= Math.PI * 2; i += Math.PI / 6) {
-//                for (double j = player.getZ() - 5 + ticksFireStompAnim; j <= player.getZ() + 5- ticksFireStompAnim; j++) {
-////                    int x = MathHelper.floor(i);
-////                    int y = MathHelper.floor(player.getY() - 0.2);
-////                    int z = MathHelper.floor(j);
-//
-//                }
                 double x = player.getX() + Math.sin(i) * (7 - ticksFrostStompAnim * 1.5);
                 double y = MathHelper.floor(player.getY() - 0.2);
                 double z = player.getZ() + Math.cos(i) * (7 - ticksFrostStompAnim * 1.5);
@@ -399,10 +300,6 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
     }
 
-    @Override
-    public void aabilities_setPulverizeTimer(long ticks) {
-        this.ticksPulverize = ticks;
-    }
 
     @Override
     public void aabilities_setFireStompTimer(long ticksUntilFireStomp) {
@@ -439,10 +336,6 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
 
 
-    @Override
-    public void aabilities_setTranscendTimer(long ticks) {
-        this.ticksTranscend = ticks;
-    }
 
     @Override
     public void aabiliites_setFuse(long ticks) {

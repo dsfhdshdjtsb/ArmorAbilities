@@ -7,8 +7,8 @@ public class ModConfigs {
     private static ModConfigProvider configs;
 
     public static boolean FOCUS;
-    public static boolean PULVERIZE;
     public static boolean MIND_CONTROL;
+    public static boolean TELEKINESIS;
 
     public static boolean CLEANSE;
     public static boolean EXPLODE;
@@ -16,7 +16,6 @@ public class ModConfigs {
 
     public static boolean DASH;
     public static boolean RUSH;
-    public static boolean DODGE;
     public static boolean BLINK;
 
 
@@ -36,8 +35,8 @@ public class ModConfigs {
     private static void createConfigs() {
         //configs.addKeyValuePair(new Pair<>("transcend.enabled", true));
         configs.addKeyValuePair(new Pair<>("focus.enabled", true));
-        configs.addKeyValuePair(new Pair<>("pulverize.enabled", true));
         configs.addKeyValuePair(new Pair<>("mind_control.enabled", true));
+        configs.addKeyValuePair(new Pair<>("telekinesis.enabled", true));
 
         configs.addKeyValuePair(new Pair<>("cleanse.enabled", true));
         configs.addKeyValuePair(new Pair<>("explode.enabled", true));
@@ -45,7 +44,6 @@ public class ModConfigs {
 
         configs.addKeyValuePair(new Pair<>("dash.enabled", true));
         configs.addKeyValuePair(new Pair<>("rush.enabled", true));
-        configs.addKeyValuePair(new Pair<>("dodge.enabled", true));
         configs.addKeyValuePair(new Pair<>("blink.enabled", true));
 
         configs.addKeyValuePair(new Pair<>("frost_stomp.enabled", true));
@@ -56,8 +54,8 @@ public class ModConfigs {
     private static void assignConfigs() {
         //TRANSCEND = CONFIG.getOrDefault("transcend.enabled", true);
         FOCUS= CONFIG.getOrDefault("focus.enabled", true);
-        PULVERIZE= CONFIG.getOrDefault("pulverize.enabled", true);
         MIND_CONTROL = CONFIG.getOrDefault("mind_control.enabled", true);
+        TELEKINESIS = CONFIG.getOrDefault("telekinesis.enabled", true);
 
         CLEANSE = CONFIG.getOrDefault("cleanse.enabled", true);
         EXPLODE = CONFIG.getOrDefault("explode.enabled", true);
@@ -65,7 +63,6 @@ public class ModConfigs {
 
         DASH = CONFIG.getOrDefault("dash.enabled", true);
         RUSH = CONFIG.getOrDefault("rush.enabled", true);
-        DODGE = CONFIG.getOrDefault("dodge.enabled", true);
         BLINK = CONFIG.getOrDefault("blink.enabled", true);
 
         FROST_STOMP = CONFIG.getOrDefault("frost_stomp.enabled", true);

@@ -4,8 +4,7 @@
   "package": "com.dsfhdshdjtsb.ArmorAbilities.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "AabilitiesPlayerEntityMixin",
-    "ExampleMixin"
+    "AabilitiesPlayerEntityMixin"
   ],
   "client": [
     "AabilitiesLivingEntityRendererMixin"
