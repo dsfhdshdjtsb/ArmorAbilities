@@ -27,30 +27,32 @@ public class KeyInputHandler {
     public static KeyBinding KEY_HELMET_ABILITY;
 
     public static void register(){
-        KEY_BOOT_ABILITY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.aabilities.boot_ability", // The translation key of the keybinding's name
+        KEY_HELMET_ABILITY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.aabilities.helmet_ability", // The translation key of the keybinding's name
                 InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
-                GLFW.GLFW_KEY_V, // The keycode of the key
-                "category.aabilities.test" // The translation key of the keybinding's category.
-        ));
-        KEY_LEGGING_ABILITY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.aabilities.legging_ability", // The translation key of the keybinding's name
-                InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
-                GLFW.GLFW_KEY_R, // The keycode of the key
-                "category.aabilities.test" // The translation key of the keybinding's category.
+                GLFW.GLFW_KEY_Z, // The keycode of the key
+                "category.aabilities.keybindings" // The translation key of the keybinding's category.
         ));
         KEY_CHEST_ABILITY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.aabilities.chest_ability", // The translation key of the keybinding's name
                 InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
                 GLFW.GLFW_KEY_X, // The keycode of the key
-                "category.aabilities.test" // The translation key of the keybinding's category.
+                "category.aabilities.keybindings" // The translation key of the keybinding's category.
         ));
-        KEY_HELMET_ABILITY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.aabilities.helmet_ability", // The translation key of the keybinding's name
+        KEY_LEGGING_ABILITY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.aabilities.legging_ability", // The translation key of the keybinding's name
                 InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
-                GLFW.GLFW_KEY_Z, // The keycode of the key
-                "category.aabilities.test" // The translation key of the keybinding's category.
+                GLFW.GLFW_KEY_R, // The keycode of the key
+                "category.aabilities.keybindings" // The translation key of the keybinding's category.
         ));
+        KEY_BOOT_ABILITY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.aabilities.boot_ability", // The translation key of the keybinding's name
+                InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
+                GLFW.GLFW_KEY_V, // The keycode of the key
+                "category.aabilities.keybindings" // The translation key of the keybinding's category.
+        ));
+
+
 
         regKeyInputs();
     }
@@ -63,7 +65,6 @@ public class KeyInputHandler {
                     if(timerAccess.aabilities_getHelmetCooldown() <= 0) {
                         timerAccess.aabilities_setHelmetCooldown(200);
                         int cooldown = 0;
-                        int pulverizeLevel = 0;
                         int mindControlLevel = 0;
                         int focusLevel = 0;
                         int telekinesisLevel = 0;

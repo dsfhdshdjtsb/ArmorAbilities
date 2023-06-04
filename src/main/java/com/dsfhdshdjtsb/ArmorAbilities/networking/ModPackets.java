@@ -39,7 +39,6 @@ public class ModPackets {
         ServerPlayNetworking.registerGlobalReceiver(HELMET_ABILITY_ID, (MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
                                                                        PacketByteBuf buf, PacketSender responseSender) -> {
             String name = buf.readString();
-            TimerAccess timerAccess =  ((TimerAccess) player);
 
             if(name.equals("focus"))
             {
@@ -139,6 +138,16 @@ public class ModPackets {
                         1.5f,
                         1f
                 );
+                player.world.playSound(
+                        null,
+                        player.getX(),
+                        player.getY(),
+                        player.getZ(),
+                        SoundEvents.ENTITY_ILLUSIONER_CAST_SPELL,
+                        SoundCategory.PLAYERS,
+                        1f,
+                        1f
+                );
             }
         });
         ServerPlayNetworking.registerGlobalReceiver(CHEST_ABILITY_ID, (MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
@@ -219,14 +228,23 @@ public class ModPackets {
 
                     }
                 }
-                    player.heal(counter + (level - 1));
+                player.heal(counter + (level - 1));
+                player.world.playSound(
+                        null,
+                        player.getX(),
+                        player.getY(),
+                        player.getZ(),
+                        SoundEvents.ENTITY_ARROW_HIT_PLAYER,
+                        SoundCategory.PLAYERS,
+                        1f,
+                        1f
+                );
             }
         });
         ServerPlayNetworking.registerGlobalReceiver(LEGGING_ABILITY_ID, (MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
                 PacketByteBuf buf, PacketSender responseSender) -> {
 
             String name = buf.readString();
-            TimerAccess timerAccess =  ((TimerAccess) player);
 
             if(name.equals("dash")) {
 

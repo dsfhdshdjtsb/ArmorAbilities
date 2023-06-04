@@ -1,6 +1,7 @@
 {
   "enchantment.aabilities.focus": "Focus",
   "enchantment.aabilities.mind_control": "Mind Control",
+  "enchantment.aabilities.telekinesis": "Telekinesis",
   "enchantment.aabilities.siphon": "Siphon",
   "enchantment.aabilities.cleanse": "Cleanse",
   "enchantment.aabilities.explode": "Explode",
@@ -12,6 +13,10 @@
   "enchantment.aabilities.fire_stomp": "Fire Stomp",
   "enchantment.aabilities.anvil_stomp": "Anvil Stomp",
 
+  "category.aabilities.keybindings": "Armor Abilities",
+  "key.aabilities.helmet_ability": "Helmet Ability",
+  "key.aabilities.chest_ability": "Chest Ability",
+  "key.aabilities.legging_ability": "Legging Ability",
+  "key.aabilities.boot_ability": "Boot Ability"
 
-  "effect.aabilities.dodge": "Dodge"
 }
