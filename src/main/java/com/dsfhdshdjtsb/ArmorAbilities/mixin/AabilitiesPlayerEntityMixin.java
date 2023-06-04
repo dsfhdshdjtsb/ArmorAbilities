@@ -191,7 +191,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
             list.remove(player);
             if(!list.isEmpty()) {
                 for (LivingEntity e : list) {
-                    e.setFireTicks(60);
+                    e.setFireTicks(20 * fireStompLevel);
                     e.damage(player.world.getDamageSources().magic(), 2 + fireStompLevel);
                     World world = e.world;
                     BlockPos pos = e.getBlockPos();

@@ -57,12 +57,12 @@ public class ModPackets {
             {
                 int level = buf.readInt();
                 List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
-                        .expand(level * 2, level * 2, level * 2));
+                        .expand(level + 5 , level + 5, level + 5));
 
                 if(!(list.size() <= 1)) {
                     for (int i = 0; i < list.size(); i++) {
                         LivingEntity e = list.get(i);
-                        if(e instanceof MobEntity && e.getMaxHealth() <= player.getMaxHealth() * 2 && !e.hasStatusEffect(ArmorAbilities.MIND_CONTROL_COOLDOWN_EFFECT) )
+                        if(e instanceof MobEntity && e.getMaxHealth() < player.getMaxHealth() * 2 && !e.hasStatusEffect(ArmorAbilities.MIND_CONTROL_COOLDOWN_EFFECT) )
                         {
                             if( i + 1 < list.size())
                             {
@@ -110,7 +110,7 @@ public class ModPackets {
             {
                 int level = buf.readInt();
                 List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
-                        .expand(level * 2, 2, level * 2));
+                        .expand(level + 5, 2, level + 5));
 
                 list.remove(player);
                 for(LivingEntity e : list)
@@ -198,7 +198,7 @@ public class ModPackets {
             {
                 int level = buf.readInt();
                 List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
-                        .expand(7, 1.0D, 7));
+                        .expand(3 + level, 1.0D, 3 + level));
                 int counter = 0;
 
                 list.remove(player);
@@ -341,14 +341,14 @@ public class ModPackets {
             {
                 if(player.isOnGround())
                     player.jump();
-                timerAccess.aabilities_setFireStompTimer(100);
+                timerAccess.aabilities_setFireStompTimer(200);
 
             }
             if(name.equals("frost_stomp"))
             {
                 if(player.isOnGround())
                     player.jump();
-                timerAccess.aabilities_setFrostStompTimer(100);
+                timerAccess.aabilities_setFrostStompTimer(200);
 
             }
             if(name.equals("anvil_stomp"))

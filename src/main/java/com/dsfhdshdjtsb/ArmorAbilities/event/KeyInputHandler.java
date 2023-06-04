@@ -76,7 +76,7 @@ public class KeyInputHandler {
                         }
                         if(focusLevel > 0)
                         {
-                            cooldown = 800 - focusLevel * 40;
+                            cooldown = 1100 - focusLevel * 100;
                             PacketByteBuf buf = PacketByteBufs.create();
                             buf.writeString("focus");
                             ClientPlayNetworking.send(ModPackets.HELMET_ABILITY_ID, buf);
@@ -88,7 +88,7 @@ public class KeyInputHandler {
                         if(mindControlLevel > 0)
                         {
                             List<MobEntity> list = client.player.world.getNonSpectatingEntities(MobEntity.class, client.player.getBoundingBox()
-                                    .expand(mindControlLevel * 2, mindControlLevel * 2, mindControlLevel * 2));
+                                    .expand(mindControlLevel + 5, mindControlLevel + 5, mindControlLevel + 5));
                             if(list.size() > 0) {
                                 cooldown = 600 - mindControlLevel * 40;
                                 PacketByteBuf buf = PacketByteBufs.create();
@@ -100,7 +100,7 @@ public class KeyInputHandler {
                         if(telekinesisLevel > 0)
                         {
                             List<LivingEntity> list = client.player.world.getNonSpectatingEntities(LivingEntity.class, client.player.getBoundingBox()
-                                    .expand(telekinesisLevel * 2, 2, telekinesisLevel * 2));
+                                    .expand(telekinesisLevel + 5, 2, telekinesisLevel + 5));
 
                             System.out.println(list.size());
                             if(list.size() > 1) {
@@ -144,7 +144,7 @@ public class KeyInputHandler {
 
                         if (explodeLevel > 0) {
                             if(timerAccess.aabilities_getAnvilStompTimer() < 0) {
-                                cooldown = 300 - explodeLevel * 20;
+                                cooldown = 400 - explodeLevel * 20;
                                 PacketByteBuf buf = PacketByteBufs.create();
                                 timerAccess.aabiliites_setFuse(80);
                                 buf.writeString("explode");
@@ -153,9 +153,9 @@ public class KeyInputHandler {
                         }
                         if (siphonLevel > 0){
                             List<LivingEntity> list = client.player.world.getNonSpectatingEntities(LivingEntity.class, client.player.getBoundingBox()
-                                    .expand(6, 1.0D, 6));
+                                    .expand(siphonLevel + 3, 1.0D, siphonLevel + 3));
                             if(list.size() > 1) {
-                                cooldown = 300 - siphonLevel * 20;
+                                cooldown = 400 - siphonLevel * 20;
                                 PacketByteBuf buf = PacketByteBufs.create();
                                 buf.writeString("siphon");
                                 buf.writeInt(siphonLevel);
@@ -240,7 +240,7 @@ public class KeyInputHandler {
                                 client.player.setPos(posX, posY, posZ);
                                 client.player.setVelocity(velX, velY, velZ);
                                 ClientPlayNetworking.send(ModPackets.LEGGING_ABILITY_ID, buf);
-                                cooldown = 400 - blinkLevel * 40;
+                                cooldown = 300 - blinkLevel * 20;
                             }
                         }
 
