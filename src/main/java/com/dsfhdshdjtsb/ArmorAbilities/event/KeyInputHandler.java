@@ -87,7 +87,7 @@ public class KeyInputHandler {
                         }
                         if(mindControlLevel > 0)
                         {
-                            List<MobEntity> list = client.player.world.getNonSpectatingEntities(MobEntity.class, client.player.getBoundingBox()
+                            List<MobEntity> list = client.player.getWorld().getNonSpectatingEntities(MobEntity.class, client.player.getBoundingBox()
                                     .expand(mindControlLevel + 5, mindControlLevel + 5, mindControlLevel + 5));
                             if(list.size() > 0) {
                                 cooldown = 600 - mindControlLevel * 40;
@@ -99,7 +99,7 @@ public class KeyInputHandler {
                         }
                         if(telekinesisLevel > 0)
                         {
-                            List<LivingEntity> list = client.player.world.getNonSpectatingEntities(LivingEntity.class, client.player.getBoundingBox()
+                            List<LivingEntity> list = client.player.getWorld().getNonSpectatingEntities(LivingEntity.class, client.player.getBoundingBox()
                                     .expand(telekinesisLevel + 5, 2, telekinesisLevel + 5));
 
                             System.out.println(list.size());
@@ -152,7 +152,7 @@ public class KeyInputHandler {
                             }
                         }
                         if (siphonLevel > 0){
-                            List<LivingEntity> list = client.player.world.getNonSpectatingEntities(LivingEntity.class, client.player.getBoundingBox()
+                            List<LivingEntity> list = client.player.getWorld().getNonSpectatingEntities(LivingEntity.class, client.player.getBoundingBox()
                                     .expand(siphonLevel + 3, 1.0D, siphonLevel + 3));
                             if(list.size() > 1) {
                                 cooldown = 400 - siphonLevel * 20;
@@ -235,8 +235,8 @@ public class KeyInputHandler {
                             buf.writeDouble(velX);
                             buf.writeDouble(velZ);
 
-                            BlockState blockState = client.player.world.getBlockState(new BlockPos((int) posX, (int) posY, (int) posZ));
-                            if (!blockState.getMaterial().blocksMovement()) {
+                            BlockState blockState = client.player.getWorld().getBlockState(new BlockPos((int) posX, (int) posY, (int) posZ));
+                            if (!blockState.blocksMovement()) {
                                 client.player.setPos(posX, posY, posZ);
                                 client.player.setVelocity(velX, velY, velZ);
                                 ClientPlayNetworking.send(ModPackets.LEGGING_ABILITY_ID, buf);

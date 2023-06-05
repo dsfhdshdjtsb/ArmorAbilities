@@ -43,7 +43,7 @@ public class ModPackets {
 
             if(name.equals("focus"))
             {
-                player.world.playSound(
+                player.getWorld().playSound(
                         null,
                         player.getX(),
                         player.getY(),
@@ -57,7 +57,7 @@ public class ModPackets {
             if(name.equals("mind_control"))
             {
                 int level = buf.readInt();
-                List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
+                List<LivingEntity> list = player.getWorld().getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
                         .expand(level + 5 , level + 5, level + 5));
 
                 if(!(list.size() <= 1)) {
@@ -86,7 +86,7 @@ public class ModPackets {
                             double z = 0;
                             while(Math.abs(x) < Math.abs(xdif))
                             {
-                                ((ServerWorld) player.world).spawnParticles(ParticleTypes.ELECTRIC_SPARK, player.getX() + x,
+                                ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.ELECTRIC_SPARK, player.getX() + x,
                                         player.getBodyY(1D) + y, player.getZ() + z, 0, 1, 0.0D, 1, 0.0D);
                                 x = x + xdif/particleNumConstant;
                                 y = y + ydif/particleNumConstant;
@@ -95,7 +95,7 @@ public class ModPackets {
                         }
                     }
 
-                    player.world.playSound(
+                    player.getWorld().playSound(
                             null,
                             player.getX(),
                             player.getY(),
@@ -111,7 +111,7 @@ public class ModPackets {
             if(name.equals("telekinesis"))
             {
                 int level = buf.readInt();
-                List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
+                List<LivingEntity> list = player.getWorld().getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
                         .expand(level + 5, 2, level + 5));
 
                 list.remove(player);
@@ -119,7 +119,7 @@ public class ModPackets {
                 {
                     float str = player.distanceTo(e) / 7;
                     e.takeKnockback(str, e.getX() - player.getX(), e.getZ() - player.getZ());
-                    if(e instanceof PlayerEntity && !player.world.isClient)
+                    if(e instanceof PlayerEntity && !player.getWorld().isClient)
                     {
                         PacketByteBuf newBuf = PacketByteBufs.create();
                         newBuf.writeDouble(e.getVelocity().x);
@@ -127,10 +127,10 @@ public class ModPackets {
                         newBuf.writeDouble(e.getVelocity().z);
                         ServerPlayNetworking.send((ServerPlayerEntity) e, VELOCITY_UPDATE_ID, newBuf);
                     }
-                    server.execute(() -> ((ServerWorld) player.world).spawnParticles(ParticleTypes.POOF, e.getX(), e.getBodyY(0.1D), e.getZ(), 5, 0.3, 0.5, 0.3, 0.0D));
+                    server.execute(() -> ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.POOF, e.getX(), e.getBodyY(0.1D), e.getZ(), 5, 0.3, 0.5, 0.3, 0.0D));
                 }
-                server.execute(() -> ((ServerWorld) player.world).spawnParticles(ParticleTypes.ELECTRIC_SPARK, player.getX(), player.getBodyY(1D) + 0.25, player.getZ(), 5, 0.1, 0.1, 0.1, 0.0D));
-                player.world.playSound(
+                server.execute(() -> ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.ELECTRIC_SPARK, player.getX(), player.getBodyY(1D) + 0.25, player.getZ(), 5, 0.1, 0.1, 0.1, 0.0D));
+                player.getWorld().playSound(
                         null,
                         player.getX(),
                         player.getY(),
@@ -140,7 +140,7 @@ public class ModPackets {
                         1.5f,
                         1f
                 );
-                player.world.playSound(
+                player.getWorld().playSound(
                         null,
                         player.getX(),
                         player.getY(),
@@ -163,7 +163,7 @@ public class ModPackets {
                 player.setFireTicks(0);
                 player.setFrozenTicks(0);
 
-                player.world.playSound(
+                player.getWorld().playSound(
                         null,
                         player.getX(),
                         player.getY(),
@@ -174,7 +174,7 @@ public class ModPackets {
                         1f
                 );
 
-                server.execute(() -> ((ServerWorld) player.world).spawnParticles(ParticleTypes.ENTITY_EFFECT, player.getX(), player.getBodyY(0.5D), player.getZ(), 20, 0.7, 0.5, 0.7, 2.0D));
+                server.execute(() -> ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.ENTITY_EFFECT, player.getX(), player.getBodyY(0.5D), player.getZ(), 20, 0.7, 0.5, 0.7, 2.0D));
 
             }
 
@@ -182,8 +182,8 @@ public class ModPackets {
             {
                 int ticks = 80;
                 timerAccess.aabiliites_setFuse(ticks);
-                player.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0f, 1.0f);
-                //                player.world.createExplosion(player, player.getX(), player.getY(), player.getZ(), 2.0f, World.ExplosionSourceType.NONE);
+                player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                //                player.getWorld().createExplosion(player, player.getX(), player.getY(), player.getZ(), 2.0f, World.ExplosionSourceType.NONE);
 
                 PacketByteBuf newBuf = PacketByteBufs.create();
                 newBuf.writeString("explode");
@@ -191,7 +191,7 @@ public class ModPackets {
                 newBuf.writeString(player.getUuidAsString());
                 newBuf.writeBoolean(false);
 
-                for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.world, player.getBlockPos())) {
+                for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.getWorld(), player.getBlockPos())) {
                     ServerPlayNetworking.send(player1, TIMER_UPDATE_ID, newBuf);
                 }
             }
@@ -199,7 +199,7 @@ public class ModPackets {
             if(name.equals("siphon"))
             {
                 int level = buf.readInt();
-                List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
+                List<LivingEntity> list = player.getWorld().getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
                         .expand(3 + level, 1.0D, 3 + level));
                 int counter = 0;
 
@@ -207,9 +207,9 @@ public class ModPackets {
                 for (LivingEntity e : list) {
 
                     counter++;
-                    e.damage(player.world.getDamageSources().magic(), 1.0f);
+                    e.damage(player.getWorld().getDamageSources().magic(), 1.0f);
 
-                    if (player.world instanceof ServerWorld) {
+                    if (player.getWorld() instanceof ServerWorld) {
                         double xdif = e.getX() - player.getX();
                         double ydif = e.getBodyY(0.5D) - player.getBodyY(0.5D);
                         double zdif = e.getZ() - player.getZ();
@@ -220,18 +220,18 @@ public class ModPackets {
                         double z = 0;
                         while(Math.abs(x) < Math.abs(xdif))
                         {
-                            ((ServerWorld) player.world).spawnParticles(ParticleTypes.COMPOSTER, player.getX() + x,
+                            ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.COMPOSTER, player.getX() + x,
                                     player.getBodyY(0.5D) + y, player.getZ() + z, 0, 1, 0.0D, 1, 0.0D);
                             x = x + xdif/particleNumConstant;
                             y = y + ydif/particleNumConstant;
                             z = z + zdif/particleNumConstant;
                         }
-                        ((ServerWorld) player.world).spawnParticles(ParticleTypes.HEART, player.getX(), player.getBodyY(0.5D), player.getZ(), 2, 0.4, 0.5, 0.4, 0.0D);
+                        ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.HEART, player.getX(), player.getBodyY(0.5D), player.getZ(), 2, 0.4, 0.5, 0.4, 0.0D);
 
                     }
                 }
                 player.heal(counter + (level - 1));
-                player.world.playSound(
+                player.getWorld().playSound(
                         null,
                         player.getX(),
                         player.getY(),
@@ -255,9 +255,9 @@ public class ModPackets {
                 double velZ = buf.readDouble();
                 server.execute(() -> {
                     player.setVelocity(velX, velY, velZ);
-                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.POOF, player.getX(), player.getBodyY(0.5D), player.getZ(), 5, 0.3, 0.5, 0.3, 0.0D);
+                    ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.POOF, player.getX(), player.getBodyY(0.5D), player.getZ(), 5, 0.3, 0.5, 0.3, 0.0D);
                 });
-                player.world.playSound(
+                player.getWorld().playSound(
                         null,
                         player.getX(),
                         player.getY(),
@@ -279,12 +279,12 @@ public class ModPackets {
                 double velZ = buf.readDouble();
 
                 server.execute(() -> {
-                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.DRAGON_BREATH, player.getX(), player.getBodyY(0.5D), player.getZ(), 15, 0.3, 0.5, 0.3, 0.0D);
+                    ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.DRAGON_BREATH, player.getX(), player.getBodyY(0.5D), player.getZ(), 15, 0.3, 0.5, 0.3, 0.0D);
                     player.setVelocity(velX, velY, velZ);
                     player.setPos(posX, posY, posZ);
                 });
 
-                player.world.playSound(
+                player.getWorld().playSound(
                         null,
                         player.getX(),
                         player.getY(),
@@ -313,7 +313,7 @@ public class ModPackets {
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 100, speedLevel));
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 100, strengthLevel));
 
-                player.world.playSound(
+                player.getWorld().playSound(
                         null,
                         player.getX(),
                         player.getY(),
@@ -323,9 +323,9 @@ public class ModPackets {
                         1.5f,
                         1f
                 );
-                if(player.world instanceof ServerWorld)
+                if(player.getWorld() instanceof ServerWorld)
                 {
-                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.ANGRY_VILLAGER, player.getX(), player.getBodyY(0.5D), player.getZ(), 3, 0.4, 0.5, 0.4, 0.0D);
+                    ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.ANGRY_VILLAGER, player.getX(), player.getBodyY(0.5D), player.getZ(), 3, 0.4, 0.5, 0.4, 0.0D);
                 }
             }
 
@@ -360,7 +360,7 @@ public class ModPackets {
                     player.jump();
                 timerAccess.aabilities_setAnvilStompTimer(ticks);
                 timerAccess.aabilities_setShouldAnvilRender(true);
-                player.world.playSound(
+                player.getWorld().playSound(
                         null,
                         new BlockPos((int)player.getX(), (int)player.getY(), (int)player.getZ()),
                         SoundEvents.BLOCK_COPPER_PLACE,
@@ -374,7 +374,7 @@ public class ModPackets {
                 newBuf.writeString(player.getUuidAsString());
                 newBuf.writeBoolean(true);
 
-                for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.world, player.getBlockPos())) {
+                for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.getWorld(), player.getBlockPos())) {
                     ServerPlayNetworking.send(player1, TIMER_UPDATE_ID, newBuf);
                 }
             }

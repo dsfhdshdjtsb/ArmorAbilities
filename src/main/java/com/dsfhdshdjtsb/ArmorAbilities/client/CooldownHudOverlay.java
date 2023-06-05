@@ -5,10 +5,8 @@ import com.dsfhdshdjtsb.ArmorAbilities.util.TimerAccess;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class CooldownHudOverlay implements HudRenderCallback {
@@ -19,7 +17,7 @@ public class CooldownHudOverlay implements HudRenderCallback {
     private static final Identifier COOLDOWN_BOOTS =  new Identifier(ArmorAbilities.modid, "/textures/gui/boots2.png");
 
     @Override
-    public void onHudRender(MatrixStack matrixStack, float tickDelta) {
+    public void onHudRender(DrawContext context, float tickDelta) {
 
         int x;
         int y;
@@ -49,10 +47,8 @@ public class CooldownHudOverlay implements HudRenderCallback {
                     } else {
                         color = 1.0f;
                     }
-                    RenderSystem.setShaderColor(color, color, color, 1.0f);
-                    RenderSystem.setShaderTexture(0, COOLDOWN_HELMET);
-
-                    DrawableHelper.drawTexture(matrixStack, x - 187, y - 23, 0, 0, 20, 20, 20, 20);
+                    context.setShaderColor(color, color, color, 1.0f);
+                    context.drawTexture(COOLDOWN_HELMET, x - 187, y - 23, 0, 0, 20, 20, 20, 20);
                 }
 
                 curCooldown = timerAccess.aabilities_getChestCooldown();
@@ -64,9 +60,8 @@ public class CooldownHudOverlay implements HudRenderCallback {
                     } else {
                         color = 1.0f;
                     }
-                    RenderSystem.setShaderColor(color, color, color, 1.0f);
-                    RenderSystem.setShaderTexture(0, COOLDOWN_CHESTPLATE);
-                    DrawableHelper.drawTexture(matrixStack, x - 172, y - 23, 0, 0, 20, 20, 20, 20);
+                    context.setShaderColor(color, color, color, 1.0f);
+                    context.drawTexture(COOLDOWN_CHESTPLATE, x - 172, y - 23, 0, 0, 20, 20, 20, 20);
                 }
 
                 curCooldown = timerAccess.aabilities_getLeggingCooldown();
@@ -78,9 +73,8 @@ public class CooldownHudOverlay implements HudRenderCallback {
                     } else {
                         color = 1.0f;
                     }
-                    RenderSystem.setShaderColor(color, color, color, 1.0f);
-                    RenderSystem.setShaderTexture(0, COOLDOWN_LEGGINGS);
-                    DrawableHelper.drawTexture(matrixStack, x - 157, y - 23, 0, 0, 20, 20, 20, 20);
+                    context.setShaderColor(color, color, color, 1.0f);
+                    context.drawTexture(COOLDOWN_LEGGINGS, x - 157, y - 23, 0, 0, 20, 20, 20, 20);
                 }
 
                 curCooldown = timerAccess.aabilities_getBootCooldown();
@@ -92,9 +86,8 @@ public class CooldownHudOverlay implements HudRenderCallback {
                     } else {
                         color = 1.0f;
                     }
-                    RenderSystem.setShaderColor(color, color, color, 1.0f);
-                    RenderSystem.setShaderTexture(0, COOLDOWN_BOOTS);
-                    DrawableHelper.drawTexture(matrixStack, x - 141, y - 23, 0, 0, 20, 20, 20, 20);
+                    context.setShaderColor(color, color, color, 1.0f);
+                    context.drawTexture(COOLDOWN_BOOTS, x - 141, y - 23, 0, 0, 20, 20, 20, 20);
 
                 }
             }

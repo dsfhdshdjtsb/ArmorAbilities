@@ -54,7 +54,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
     private long fuse = 0;
 
-    @Inject(at = @At("HEAD"), method = "damage")
+    @Inject(at = @At("HEAD"), method = "damage", cancellable = true)
     private void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         PlayerEntity player = (PlayerEntity) ((Object)this);
         if(((TimerAccess) player).aabilities_getAnvilStompTimer() > -5)
@@ -91,8 +91,8 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                 for (ItemStack i : player.getArmorItems()) {
                     explodeLevel += EnchantmentHelper.getLevel(ArmorAbilities.EXPLODE, i);
                 }
-                if(!player.world.isClient())
-                    player.world.createExplosion(player, player.getX(), player.getBodyY(0.0625D), player.getZ(), 1.5f + 0.5f * explodeLevel, World.ExplosionSourceType.NONE);
+                if(!player.getWorld().isClient())
+                    player.getWorld().createExplosion(player, player.getX(), player.getBodyY(0.0625D), player.getZ(), 1.5f + 0.5f * explodeLevel, World.ExplosionSourceType.NONE);
             }
             if(player.isOnGround())
             {
@@ -109,8 +109,8 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                 anvilStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.ANVIL_STOMP, i);
             }
 
-            if(!player.world.isClient) {
-                List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
+            if(!player.getWorld().isClient) {
+                List<LivingEntity> list = player.getWorld().getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
                         .expand(7, 1, 7));
 
 
@@ -127,7 +127,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                         e.setVelocity(x, y, z);
                     }
                 }
-                player.world.playSound(
+                player.getWorld().playSound(
                         null,
                         new BlockPos((int) player.getX(), (int) player.getY(), (int) player.getZ()),
                         SoundEvents.BLOCK_ANVIL_LAND,
@@ -148,7 +148,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
             {
                 ticksAnvilStomp = Math.max(ticksAnvilStomp - 2, -5);
             }
-            if(ticksAnvilStomp == -5 && !player.world.isClient)
+            if(ticksAnvilStomp == -5 && !player.getWorld().isClient)
             {
                 ((TimerAccess)player).aabilities_setShouldAnvilRender(false);
                 PacketByteBuf newBuf = PacketByteBufs.create();
@@ -157,13 +157,13 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                 newBuf.writeString(player.getUuidAsString());
                 newBuf.writeBoolean(false);
 
-                for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.world, player.getBlockPos())) {
+                for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.getWorld(), player.getBlockPos())) {
                     ServerPlayNetworking.send(player1, ModPackets.TIMER_UPDATE_ID, newBuf);
                 }
             }
         }
 
-        if(--ticksAnvilStompAnim >= 0 && !player.world.isClient) {
+        if(--ticksAnvilStompAnim >= 0 && !player.getWorld().isClient) {
             for (double i = 0; i <= Math.PI * 2; i += Math.PI / 6) {
 
                 double x = player.getX() + Math.sin(i) * (7 - ticksAnvilStompAnim * 1.5);
@@ -171,8 +171,8 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                 double z = player.getZ() + Math.cos(i) * (7 - ticksAnvilStompAnim * 1.5);
 
                 BlockPos blockPos = new BlockPos((int) x, (int) y, (int) z);
-                BlockState blockState = player.world.getBlockState(blockPos);
-                ((ServerWorld) player.world).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), x,
+                BlockState blockState = player.getWorld().getBlockState(blockPos);
+                ((ServerWorld) player.getWorld()).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), x,
                         y + 1, z, 4, 1, 0.0D, 1, 0.0D);
 
             }
@@ -185,15 +185,15 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                 fireStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.FIRE_STOMP, i);
             }
 
-            List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
+            List<LivingEntity> list = player.getWorld().getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
                     .expand(7, 1, 7));
 
             list.remove(player);
             if(!list.isEmpty()) {
                 for (LivingEntity e : list) {
                     e.setFireTicks(20 * fireStompLevel);
-                    e.damage(player.world.getDamageSources().magic(), 2 + fireStompLevel);
-                    World world = e.world;
+                    e.damage(player.getWorld().getDamageSources().magic(), 2 + fireStompLevel);
+                    World world = e.getWorld();
                     BlockPos pos = e.getBlockPos();
                     if (world.getBlockState(pos) == Blocks.AIR.getDefaultState()) {
                         BlockState fire = Blocks.FIRE.getDefaultState();
@@ -201,7 +201,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                     }
                 }
             }
-            player.world.playSound(
+            player.getWorld().playSound(
                     null,
                     new BlockPos((int)player.getX(), (int)player.getY(), (int)player.getZ()),
                     SoundEvents.ENTITY_GENERIC_SMALL_FALL,
@@ -211,7 +211,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
             );
             ((TimerAccess) player).aabilities_setFireStompAnimTimer(5);
         }
-        if(--ticksFireStompAnim >= 0 && !player.world.isClient)
+        if(--ticksFireStompAnim >= 0 && !player.getWorld().isClient)
         {
             for (double i = 0; i <= Math.PI * 2; i += Math.PI / 6) {
 
@@ -220,15 +220,15 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                 double z = player.getZ() + Math.cos(i) * (7 - ticksFireStompAnim * 1.5);
 
                 BlockPos blockPos = new BlockPos((int)x, (int)y, (int)z);
-                BlockState blockState = player.world.getBlockState(blockPos);
+                BlockState blockState = player.getWorld().getBlockState(blockPos);
                 if(Math.random() < .10)
                 {
-                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.FLAME, x,
+                    ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.FLAME, x,
                             y + 1, z, 4, 1, 0.0D, 1, 0.0D);
                 }
                 else
                 {
-                    ((ServerWorld) player.world).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), x,
+                    ((ServerWorld) player.getWorld()).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), x,
                             y + 1, z, 4, 1, 0.0D, 1, 0.0D);
                 }
 
@@ -247,7 +247,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                     frostStompLevel += EnchantmentHelper.getLevel(ArmorAbilities.FROST_STOMP, i);
                 }
 
-                List<LivingEntity> list = player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
+                List<LivingEntity> list = player.getWorld().getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
                         .expand(7, 1, 7));
 
                 list.remove(player);
@@ -258,11 +258,11 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                         if (frostStompLevel >= 4)
                             amp++;
                         e.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 100, amp));
-                        ((ServerWorld) player.world).spawnParticles(ParticleTypes.SNOWFLAKE, e.getX(),
+                        ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.SNOWFLAKE, e.getX(),
                                 e.getBodyY(0.5D) - 1, e.getZ(), 10, 0.5, 0.0D, 0.5, 0.0D);
                     }
                 }
-                player.world.playSound(
+                player.getWorld().playSound(
                         null,
                         new BlockPos((int) player.getX(), (int) player.getY(), (int) player.getZ()),
                         SoundEvents.ENTITY_GENERIC_SMALL_FALL,
@@ -275,7 +275,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
         }
 
 
-        if(--ticksFrostStompAnim >= 0 && !player.world.isClient)
+        if(--ticksFrostStompAnim >= 0 && !player.getWorld().isClient)
         {
             for (double i = 0; i <= Math.PI * 2; i += Math.PI / 6) {
                 double x = player.getX() + Math.sin(i) * (7 - ticksFrostStompAnim * 1.5);
@@ -283,15 +283,15 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                 double z = player.getZ() + Math.cos(i) * (7 - ticksFrostStompAnim * 1.5);
 
                 BlockPos blockPos = new BlockPos((int)x, (int)y, (int)z);
-                BlockState blockState = player.world.getBlockState(blockPos);
+                BlockState blockState = player.getWorld().getBlockState(blockPos);
                 if(Math.random() < .10)
                 {
-                    ((ServerWorld) player.world).spawnParticles(ParticleTypes.SNOWFLAKE, x,
+                    ((ServerWorld) player.getWorld()).spawnParticles(ParticleTypes.SNOWFLAKE, x,
                             y + 1, z, 4, 1, 0.0D, 1, 0.0D);
                 }
                 else
                 {
-                    ((ServerWorld) player.world).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), x,
+                    ((ServerWorld) player.getWorld()).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), x,
                             y + 1, z, 4, 1, 0.0D, 1, 0.0D);
                 }
             }
