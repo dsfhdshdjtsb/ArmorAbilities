@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
@@ -73,7 +74,8 @@ public class ModPackets {
                                 ((MobEntity) e).setTarget(list.get(0));
                             }
 //                            e.addStatusEffect(new StatusEffectInstance(ArmorAbilities.MIND_CONTROLLED_EFFECT, 160, 0));
-                            e.addStatusEffect(new StatusEffectInstance(ArmorAbilities.MIND_CONTROL_COOLDOWN_EFFECT, 1200, 0, false, false));
+                            if(!(e instanceof CreeperEntity))
+                                e.addStatusEffect(new StatusEffectInstance(ArmorAbilities.MIND_CONTROL_COOLDOWN_EFFECT, 1200, 0, false, false));
                             double xdif = e.getX() - player.getX();
                             double ydif = e.getBodyY(0.5D) - player.getBodyY(0.5D);
                             double zdif = e.getZ() - player.getZ();
