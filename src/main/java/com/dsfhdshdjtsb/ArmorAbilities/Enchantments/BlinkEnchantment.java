@@ -4,17 +4,14 @@ import com.dsfhdshdjtsb.ArmorAbilities.config.ModConfigs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.FireballEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class BlinkEnchantment  extends Enchantment {
     public BlinkEnchantment() {
         super(Rarity.COMMON, EnchantmentTarget.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
         if(ModConfigs.BLINK)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "blink"), this);
+            Registry.register(Registry.ENCHANTMENT, new Identifier("aabilities", "blink"), this);
     }
 
     @Override

@@ -6,15 +6,14 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class CleanseEnchantment extends Enchantment {
     public CleanseEnchantment() {
         super(Rarity.COMMON, EnchantmentTarget.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
         if(ModConfigs.CLEANSE)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "cleanse"), this);
+            Registry.register(Registry.ENCHANTMENT, new Identifier("aabilities", "cleanse"), this);
     }
 
     @Override

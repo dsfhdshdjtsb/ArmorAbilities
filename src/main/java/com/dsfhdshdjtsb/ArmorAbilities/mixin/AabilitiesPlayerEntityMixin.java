@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -92,7 +93,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                     explodeLevel += EnchantmentHelper.getLevel(ArmorAbilities.EXPLODE, i);
                 }
                 if(!player.world.isClient())
-                    player.world.createExplosion(player, player.getX(), player.getBodyY(0.0625D), player.getZ(), 1.5f + 0.5f * explodeLevel, World.ExplosionSourceType.NONE);
+                    player.world.createExplosion(player, player.getX(), player.getBodyY(0.0625D), player.getZ(), 1.5f + 0.5f * explodeLevel, Explosion.DestructionType.NONE);
             }
             if(player.isOnGround())
             {
@@ -121,7 +122,9 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                         double y = 0.8 + anvilStompLevel * .1;
                         if (e instanceof PlayerEntity) {
                             PacketByteBuf newBuf = PacketByteBufs.create();
-                            newBuf.writeDouble(x).writeDouble(y).writeDouble(z);
+                            newBuf.writeDouble(x);
+                            newBuf.writeDouble(y);
+                            newBuf.writeDouble(z);
                             ServerPlayNetworking.send((ServerPlayerEntity) e, ModPackets.VELOCITY_UPDATE_ID, newBuf);
                         }
                         e.setVelocity(x, y, z);
@@ -192,7 +195,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
             if(!list.isEmpty()) {
                 for (LivingEntity e : list) {
                     e.setFireTicks(20 * fireStompLevel);
-                    e.damage(player.world.getDamageSources().magic(), 2 + fireStompLevel);
+                    e.damage(DamageSource.MAGIC, 2 + fireStompLevel);
                     World world = e.world;
                     BlockPos pos = e.getBlockPos();
                     if (world.getBlockState(pos) == Blocks.AIR.getDefaultState()) {

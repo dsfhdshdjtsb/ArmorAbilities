@@ -7,16 +7,12 @@ import com.dsfhdshdjtsb.ArmorAbilities.networking.ModPackets;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.minecraft.util.registry.Registry;
 
 
 public class ArmorAbilities implements ModInitializer {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger("modid");
 	public static final String modid = "aabilities";
 
 
@@ -62,7 +58,7 @@ public class ArmorAbilities implements ModInitializer {
 		ANVIL_STOMP = new AnvilStompEnchantment();
 
 
-		Registry.register(Registries.STATUS_EFFECT, new Identifier("aabilities", "mind_control_cooldown"), MIND_CONTROL_COOLDOWN_EFFECT);
+		Registry.register(Registry.STATUS_EFFECT, new Identifier("aabilities", "mind_control_cooldown"), MIND_CONTROL_COOLDOWN_EFFECT);
 		ModPackets.registerC2SPackets();
 		ModPackets.registerS2CPackets();
 	}

@@ -1,8 +1,6 @@
 package com.dsfhdshdjtsb.ArmorAbilities.mixin;
 
-import com.dsfhdshdjtsb.ArmorAbilities.ArmorAbilities;
 import com.dsfhdshdjtsb.ArmorAbilities.util.TimerAccess;
-import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -17,18 +15,15 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Timer;
 
 @Mixin(LivingEntityRenderer.class)
 public abstract class AabilitiesLivingEntityRendererMixin<T extends LivingEntity, M extends EntityModel<T>>
@@ -56,9 +51,9 @@ public abstract class AabilitiesLivingEntityRendererMixin<T extends LivingEntity
                     float k = 1.0f + h * 0.3f;
                     matrixStack.scale(k, k, k);
                 }
-                matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0f));
+                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
                 matrixStack.translate(-0.5f, -0.5f, 0.5f);
-                matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90.0f));
+                matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0F));
                 TntMinecartEntityRenderer.renderFlashingBlock(MinecraftClient.getInstance().getBlockRenderManager(), Blocks.TNT.getDefaultState(), matrixStack, vertexConsumerProvider, i, fuse / 5 % 2 == 0);
                 matrixStack.pop();
                 ci.cancel();
@@ -71,7 +66,7 @@ public abstract class AabilitiesLivingEntityRendererMixin<T extends LivingEntity
                 }
                 World world = livingEntity.getWorld();
                 matrixStack.push();
-                BlockPos blockPos = BlockPos.ofFloored(livingEntity.getX(), livingEntity.getBoundingBox().maxY, livingEntity.getZ());
+                BlockPos blockPos = new BlockPos(livingEntity.getX(), livingEntity.getBoundingBox().maxY, livingEntity.getZ());
                 matrixStack.translate(-0.5, 0.0, -0.5);
                 BlockRenderManager blockRenderManager = MinecraftClient.getInstance().getBlockRenderManager();
                 blockRenderManager.getModelRenderer().render(world, blockRenderManager.getModel(blockState), blockState, blockPos, matrixStack, vertexConsumerProvider.getBuffer(RenderLayers.getMovingBlockLayer(blockState)), false, Random.create(), blockState.getRenderingSeed(livingEntity.getBlockPos()), OverlayTexture.DEFAULT_UV);

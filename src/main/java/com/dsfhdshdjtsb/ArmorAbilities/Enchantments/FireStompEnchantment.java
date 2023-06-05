@@ -4,16 +4,14 @@ import com.dsfhdshdjtsb.ArmorAbilities.config.ModConfigs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class FireStompEnchantment  extends Enchantment {
     public FireStompEnchantment() {
         super(Rarity.COMMON, EnchantmentTarget.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
         if(ModConfigs.FIRE_STOMP)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "fire_stomp"), this);
+            Registry.register(Registry.ENCHANTMENT, new Identifier("aabilities", "fire_stomp"), this);
     }
 
     @Override

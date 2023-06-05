@@ -4,16 +4,14 @@ import com.dsfhdshdjtsb.ArmorAbilities.config.ModConfigs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class RushEnchantment  extends Enchantment {
     public RushEnchantment() {
         super(Rarity.COMMON, EnchantmentTarget.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
         if(ModConfigs.RUSH)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "rush"), this);
+            Registry.register(Registry.ENCHANTMENT, new Identifier("aabilities", "rush"), this);
     }
 
     @Override

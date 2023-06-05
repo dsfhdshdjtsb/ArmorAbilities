@@ -5,7 +5,6 @@ import com.dsfhdshdjtsb.ArmorAbilities.util.TimerAccess;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -34,7 +33,7 @@ public class CooldownHudOverlay implements HudRenderCallback {
 
             x = width / 2;
             y = height;
-            RenderSystem.setShader(GameRenderer::getPositionColorTexProgram);
+            RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
 
 
             if(timerAccess != null && client.world != null) {

@@ -4,15 +4,14 @@ import com.dsfhdshdjtsb.ArmorAbilities.config.ModConfigs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class ExplodeEnchantment extends Enchantment {
     public ExplodeEnchantment() {
         super(Rarity.COMMON, EnchantmentTarget.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
         if(ModConfigs.EXPLODE)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "explode"), this);
+            Registry.register(Registry.ENCHANTMENT, new Identifier("aabilities", "explode"), this);
     }
 
     @Override

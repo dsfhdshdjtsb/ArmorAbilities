@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.CreeperEntity;
@@ -207,7 +208,7 @@ public class ModPackets {
                 for (LivingEntity e : list) {
 
                     counter++;
-                    e.damage(player.world.getDamageSources().magic(), 1.0f);
+                    e.damage(DamageSource.MAGIC, 1.0f);
 
                     if (player.world instanceof ServerWorld) {
                         double xdif = e.getX() - player.getX();

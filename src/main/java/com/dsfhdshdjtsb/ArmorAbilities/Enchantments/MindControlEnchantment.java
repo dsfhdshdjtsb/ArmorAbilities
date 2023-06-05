@@ -6,15 +6,14 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class MindControlEnchantment extends Enchantment {
     public MindControlEnchantment() {
         super(Rarity.COMMON, EnchantmentTarget.ARMOR_HEAD, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
         if(ModConfigs.MIND_CONTROL)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "mind_control"), this);
+            Registry.register(Registry.ENCHANTMENT, new Identifier("aabilities", "mind_control"), this);
     }
 
     @Override

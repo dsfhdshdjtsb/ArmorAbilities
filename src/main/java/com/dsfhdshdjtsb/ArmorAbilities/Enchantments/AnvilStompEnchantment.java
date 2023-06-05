@@ -4,15 +4,14 @@ import com.dsfhdshdjtsb.ArmorAbilities.config.ModConfigs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class AnvilStompEnchantment extends Enchantment {
     public AnvilStompEnchantment() {
         super(Rarity.COMMON, EnchantmentTarget.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
         if(ModConfigs.ANVIL_STOMP)
-            Registry.register(Registries.ENCHANTMENT, new Identifier("aabilities", "anvil_stomp"), this);
+            Registry.register(Registry.ENCHANTMENT, new Identifier("aabilities", "anvil_stomp"), this);
     }
 
     @Override
