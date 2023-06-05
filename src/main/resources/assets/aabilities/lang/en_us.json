@@ -1,17 +1,31 @@
 {
   "enchantment.aabilities.focus": "Focus",
+  "enchantment.aabilities.focus.desc": "Instantly refresh all cooldowns excluding this one",
   "enchantment.aabilities.mind_control": "Mind Control",
+  "enchantment.aabilities.mind_control.desc": "Make nearby mobs target each other",
   "enchantment.aabilities.telekinesis": "Telekinesis",
+  "enchantment.aabilities.telekinesis.desc": "Pull nearby enemies toward you",
+
   "enchantment.aabilities.siphon": "Siphon",
+  "enchantment.aabilities.siphon.desc": "Steal HP from nearby enemies",
   "enchantment.aabilities.cleanse": "Cleanse",
+  "enchantment.aabilities.cleanse.desc": "Cleanse all status effects, flame, and frost",
   "enchantment.aabilities.explode": "Explode",
+  "enchantment.aabilities.explode.desc": "Transform into TNT and explode",
+
   "enchantment.aabilities.blink": "Blink",
+  "enchantment.aabilities.blink.desc": "Teleport a short distance forwards",
   "enchantment.aabilities.dash": "Dash",
+  "enchantment.aabilities.dash.desc": "Dash in the target direction",
   "enchantment.aabilities.rush": "Rush",
-  "enchantment.aabilities.dodge": "Dodge",
+  "enchantment.aabilities.rush.desc": "Gain Speed and Strength for a duration",
+
   "enchantment.aabilities.frost_stomp": "Frost Stomp",
+  "enchantment.aabilities.frost_stomp.desc": "Freeze and slow nearby enemies",
   "enchantment.aabilities.fire_stomp": "Fire Stomp",
+  "enchantment.aabilities.fire_stomp.desc": "Ignite and damage nearby enemies",
   "enchantment.aabilities.anvil_stomp": "Anvil Stomp",
+  "enchantment.aabilities.anvil_stomp.desc": "Transform into an anvil, becoming immune to damage and knocking up nearby enemies",
 
   "category.aabilities.keybindings": "Armor Abilities",
   "key.aabilities.helmet_ability": "Helmet Ability",

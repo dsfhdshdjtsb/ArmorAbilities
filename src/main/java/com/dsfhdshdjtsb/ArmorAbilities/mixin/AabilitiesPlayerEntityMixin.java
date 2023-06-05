@@ -54,7 +54,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
     private long fuse = 0;
 
-    @Inject(at = @At("HEAD"), method = "damage")
+    @Inject(at = @At("HEAD"), method = "damage",  cancellable = true)
     private void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         PlayerEntity player = (PlayerEntity) ((Object)this);
         if(((TimerAccess) player).aabilities_getAnvilStompTimer() > -5)
