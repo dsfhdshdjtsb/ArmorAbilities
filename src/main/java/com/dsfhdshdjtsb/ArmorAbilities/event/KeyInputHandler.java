@@ -144,10 +144,12 @@ public class KeyInputHandler {
 
                         if (explodeLevel > 0) {
                             if(timerAccess.aabilities_getAnvilStompTimer() < 0) {
+                                int ticks = 80;
                                 cooldown = 400 - explodeLevel * 20;
                                 PacketByteBuf buf = PacketByteBufs.create();
-                                timerAccess.aabiliites_setFuse(80);
                                 buf.writeString("explode");
+                                buf.writeInt(ticks);
+                                timerAccess.aabiliites_setFuse(ticks);
                                 ClientPlayNetworking.send(ModPackets.CHEST_ABILITY_ID, buf);
                             }
                         }

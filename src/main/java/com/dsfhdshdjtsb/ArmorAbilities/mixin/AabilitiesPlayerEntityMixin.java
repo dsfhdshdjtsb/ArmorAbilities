@@ -152,13 +152,12 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
             {
                 ((TimerAccess)player).aabilities_setShouldAnvilRender(false);
                 PacketByteBuf newBuf = PacketByteBufs.create();
-                newBuf.writeString("anvil_stomp");
+                newBuf.writeString("stop_render_anvil");
                 newBuf.writeInt(0);
                 newBuf.writeString(player.getUuidAsString());
-                newBuf.writeBoolean(false);
 
                 for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.getWorld(), player.getBlockPos())) {
-                    ServerPlayNetworking.send(player1, ModPackets.TIMER_UPDATE_ID, newBuf);
+                    ServerPlayNetworking.send(player1, ModPackets.RENDER_UPDATE_ID, newBuf);
                 }
             }
         }

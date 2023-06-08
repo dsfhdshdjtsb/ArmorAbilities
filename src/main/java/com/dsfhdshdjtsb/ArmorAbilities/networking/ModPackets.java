@@ -34,7 +34,7 @@ public class ModPackets {
     public static final Identifier CHEST_ABILITY_ID = new Identifier(ArmorAbilities.modid, "chest_ability");
     public static final Identifier HELMET_ABILITY_ID = new Identifier(ArmorAbilities.modid, "helmet_ability");
     public static final Identifier VELOCITY_UPDATE_ID = new Identifier(ArmorAbilities.modid, "velocity_update");
-    public static final Identifier TIMER_UPDATE_ID = new Identifier(ArmorAbilities.modid, "timer_update");
+    public static final Identifier RENDER_UPDATE_ID = new Identifier(ArmorAbilities.modid, "render_update");
 
     public static void registerC2SPackets(){
         ServerPlayNetworking.registerGlobalReceiver(HELMET_ABILITY_ID, (MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
@@ -180,19 +180,20 @@ public class ModPackets {
 
             if(name.equals("explode"))
             {
-                int ticks = 80;
+                int ticks = buf.readInt();
                 timerAccess.aabiliites_setFuse(ticks);
                 player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0f, 1.0f);
                 //                player.getWorld().createExplosion(player, player.getX(), player.getY(), player.getZ(), 2.0f, World.ExplosionSourceType.NONE);
 
                 PacketByteBuf newBuf = PacketByteBufs.create();
+
                 newBuf.writeString("explode");
                 newBuf.writeInt(ticks);
                 newBuf.writeString(player.getUuidAsString());
                 newBuf.writeBoolean(false);
 
                 for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.getWorld(), player.getBlockPos())) {
-                    ServerPlayNetworking.send(player1, TIMER_UPDATE_ID, newBuf);
+                    ServerPlayNetworking.send(player1, RENDER_UPDATE_ID, newBuf);
                 }
             }
 
@@ -369,13 +370,12 @@ public class ModPackets {
                         1f
                 );
                 PacketByteBuf newBuf = PacketByteBufs.create();
-                newBuf.writeString("anvil_stomp");
+                newBuf.writeString("render_anvil");
                 newBuf.writeInt(ticks);
                 newBuf.writeString(player.getUuidAsString());
-                newBuf.writeBoolean(true);
 
                 for (ServerPlayerEntity player1 : PlayerLookup.tracking((ServerWorld) player.getWorld(), player.getBlockPos())) {
-                    ServerPlayNetworking.send(player1, TIMER_UPDATE_ID, newBuf);
+                    ServerPlayNetworking.send(player1, RENDER_UPDATE_ID, newBuf);
                 }
             }
         });
@@ -390,32 +390,29 @@ public class ModPackets {
             if(client.player != null)
                 client.player.setVelocity(velX, velY, velZ);
         });
-        ClientPlayNetworking.registerGlobalReceiver(TIMER_UPDATE_ID, (client, handler, buf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(RENDER_UPDATE_ID, (client, handler, buf, responseSender) -> {
             String name = buf.readString();
             int ticks = buf.readInt();
             String uuid = buf.readString();
-            boolean shouldRenderAnvil = buf.readBoolean();
-
-            if(name.equals("explode"))
-            {
-                if(client.world != null)
-                {
-                    TimerAccess timerAccess = (TimerAccess) client.world.getPlayerByUuid((UUID.fromString(uuid)));
-                    if(timerAccess != null)
-                        timerAccess.aabiliites_setFuse(ticks);
-                }
-            }
-            else if(name.equals("anvil_stomp"))
-            {
-                if(client.world != null)
-                {
-                    TimerAccess timerAccess = (TimerAccess) client.world.getPlayerByUuid((UUID.fromString(uuid)));
-                    if(timerAccess != null)
-                    {
-                        timerAccess.aabilities_setShouldAnvilRender(shouldRenderAnvil);
-
+            if(client.world != null) {
+                switch (name) {
+                    case "set_fuse" -> {
+                        TimerAccess timerAccess = (TimerAccess) client.world.getPlayerByUuid((UUID.fromString(uuid)));
+                        if (timerAccess != null)
+                            timerAccess.aabiliites_setFuse(ticks);
                     }
-
+                    case "render_anvil" -> {
+                        TimerAccess timerAccess = (TimerAccess) client.world.getPlayerByUuid((UUID.fromString(uuid)));
+                        if (timerAccess != null) {
+                            timerAccess.aabilities_setShouldAnvilRender(true);
+                        }
+                    }
+                    case "stop_render_anvil" -> {
+                        TimerAccess timerAccess = (TimerAccess) client.world.getPlayerByUuid((UUID.fromString(uuid)));
+                        if (timerAccess != null) {
+                            timerAccess.aabilities_setShouldAnvilRender(false);
+                        }
+                    }
                 }
             }
         });
