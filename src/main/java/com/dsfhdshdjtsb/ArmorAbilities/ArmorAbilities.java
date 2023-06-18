@@ -64,6 +64,5 @@ public class ArmorAbilities implements ModInitializer {
 
 		Registry.register(Registries.STATUS_EFFECT, new Identifier("aabilities", "mind_control_cooldown"), MIND_CONTROL_COOLDOWN_EFFECT);
 		ModPackets.registerC2SPackets();
-		ModPackets.registerS2CPackets();
 	}
 }
