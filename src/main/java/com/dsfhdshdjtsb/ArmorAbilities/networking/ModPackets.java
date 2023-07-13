@@ -59,7 +59,7 @@ public class ModPackets {
                 int level = buf.readInt();
                 List<LivingEntity> list = player.getWorld().getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
                         .expand(level + 5 , level + 5, level + 5));
-
+                list.remove(player);
                 if(!(list.size() <= 1)) {
                     for (int i = 0; i < list.size(); i++) {
                         LivingEntity e = list.get(i);
