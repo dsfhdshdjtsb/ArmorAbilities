@@ -7,7 +7,10 @@
     "AabilitiesPlayerEntityMixin"
   ],
   "client": [
-    "AabilitiesLivingEntityRendererMixin"
+    "AabilitiesCameraMixin",
+    "AabilitiesHandHeldItemMixin",
+    "AabilitiesLivingEntityRendererMixin",
+    "AabilitiesPlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

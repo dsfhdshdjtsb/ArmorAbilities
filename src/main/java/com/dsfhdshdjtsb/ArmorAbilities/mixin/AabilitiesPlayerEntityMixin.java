@@ -11,6 +11,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -54,6 +55,28 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
 
     private long fuse = 0;
 
+    @Inject(at = @At("HEAD"), method = "getMovementSpeed", cancellable = true)
+    private void mvmtSpeedInject(CallbackInfoReturnable<Float> cir)
+    {
+        PlayerEntity player = (PlayerEntity) ((Object)this);
+        TimerAccess timerAccess = (TimerAccess) player;
+        if((timerAccess.aabilities_getFuse() >= 0 || timerAccess.aabilities_getAnvilStompTimer() >= -5) && player.isOnGround())
+        {
+            cir.setReturnValue(0.0f);
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "jump", cancellable = true)
+    private void jump(CallbackInfo ci)
+    {
+        PlayerEntity player = (PlayerEntity) ((Object)this);
+        TimerAccess timerAccess = (TimerAccess) player;
+        if(timerAccess.aabilities_getFuse() >= 0)
+        {
+            ci.cancel();
+        }
+    }
+
     @Inject(at = @At("HEAD"), method = "damage", cancellable = true)
     private void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         PlayerEntity player = (PlayerEntity) ((Object)this);
@@ -94,10 +117,6 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                 if(!player.getWorld().isClient())
                     player.getWorld().createExplosion(player, player.getX(), player.getBodyY(0.0625D), player.getZ(), 1.5f + 0.5f * explodeLevel, World.ExplosionSourceType.NONE);
             }
-            if(player.isOnGround())
-            {
-                player.slowMovement(player.getBlockStateAtPos(), new Vec3d(0.001,0.001,0.001));
-            }
         }
 
         if(--this.ticksAnvilStomp >= 0L && player.isOnGround())
@@ -117,14 +136,13 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
                 list.remove(player);
                 if (!list.isEmpty()) {
                     for (LivingEntity e : list) {
-                        double x = 0, z = 0;
-                        double y = 0.8 + anvilStompLevel * .1;
+                        e.takeKnockback(0.5 + 0.1 * anvilStompLevel, player.getX() - e.getX(), player.getZ() - e.getZ());
+                        e.addVelocity(0, (0.1 + 0.1 *anvilStompLevel) * (1 - e.getAttributeBaseValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE)), 0);
                         if (e instanceof PlayerEntity) {
                             PacketByteBuf newBuf = PacketByteBufs.create();
-                            newBuf.writeDouble(x).writeDouble(y).writeDouble(z);
+                            newBuf.writeDouble(e.getVelocity().x).writeDouble(e.getVelocity().y).writeDouble(e.getVelocity().z);
                             ServerPlayNetworking.send((ServerPlayerEntity) e, ModPackets.VELOCITY_UPDATE_ID, newBuf);
                         }
-                        e.setVelocity(x, y, z);
                     }
                 }
                 player.getWorld().playSound(
@@ -140,11 +158,7 @@ public  class AabilitiesPlayerEntityMixin implements TimerAccess {
         }
         else if(ticksAnvilStomp >= -5)
         {
-            if(player.isOnGround())
-            {
-                player.slowMovement(player.getBlockStateAtPos(), new Vec3d(0.001,0.001,0.001));
-            }
-            else if(player.isTouchingWater())
+            if(player.isTouchingWater())
             {
                 ticksAnvilStomp = Math.max(ticksAnvilStomp - 2, -5);
             }
