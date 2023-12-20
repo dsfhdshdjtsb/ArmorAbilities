@@ -200,7 +200,7 @@ public class ModPackets {
             {
                 int level = buf.readInt();
                 List<LivingEntity> list = player.getWorld().getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox()
-                        .expand(3 + level, 1.0D, 3 + level));
+                        .expand(3 + level, 3 + level, 3 + level));
                 int counter = 0;
 
                 list.remove(player);
@@ -230,7 +230,8 @@ public class ModPackets {
 
                     }
                 }
-                player.heal(counter + (level - 1));
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, level * 20 + 20, Math.min(counter - 1, 4)));
+
                 player.getWorld().playSound(
                         null,
                         player.getX(),
